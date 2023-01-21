@@ -1,0 +1,46 @@
+// .vben-menu {
+//   padding: 0 15px !important;
+// }
+.vben-menu-item::after {
+  // right: -15px !important;
+  width: 3px !important;
+  border-radius: 3px 0 0 3px;
+}
+
+.vben-menu-item,
+.vben-menu-submenu,
+.vben-simple-menu__children {
+  // border-radius: 5px;
+  // margin: 0 15px !important;
+  // overflow: visible !important;
+
+  .vben-svg-icon {
+    color: #c8d0df;
+  }
+
+  .vben-simple-menu-sub-title {
+    color: #707582;
+  }
+}
+
+
+.vben-menu-item-selected {
+  .vben-svg-icon {
+    color: inherit;
+  }
+
+  .vben-simple-menu-sub-title {
+    color:inherit;
+  }
+}
+.vben-menu-item-active {
+  .vben-menu-submenu-title {
+    .vben-svg-icon {
+      color: inherit;
+    }
+  
+    .vben-simple-menu-sub-title {
+      color:inherit;
+    }
+  }
+}

@@ -1,0 +1,93 @@
+@prefix-cls: ~'@{namespace}-basic-table';
+
+// fix table unnecessary scrollbar
+.@{prefix-cls} {
+  .hide-scrollbar-y {
+    .ant-spin-nested-loading {
+      .ant-spin-container {
+        .ant-table {
+          .ant-table-content {
+            .ant-table-scroll {
+              .ant-table-hide-scrollbar {
+                overflow-y: auto !important;
+              }
+
+              .ant-table-body {
+                overflow-y: auto !important;
+              }
+            }
+
+            .ant-table-fixed-right {
+              .ant-table-body-outer {
+                .ant-table-body-inner {
+                  overflow-y: auto !important;
+                }
+              }
+            }
+
+            .ant-table-fixed-left {
+              .ant-table-body-outer {
+                .ant-table-body-inner {
+                  overflow-y: auto !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .hide-scrollbar-x {
+    .ant-spin-nested-loading {
+      .ant-spin-container {
+        .ant-table {
+          .ant-table-content {
+            .ant-table-scroll {
+              .ant-table-hide-scrollbar {
+                //overflow-x: auto !important;
+              }
+
+              .ant-table-body {
+                overflow: auto !important;
+              }
+            }
+
+            .ant-table-fixed-right {
+              .ant-table-body-outer {
+                .ant-table-body-inner {
+                  overflow-x: auto !important;
+                }
+              }
+            }
+
+            .ant-table-fixed-left {
+              .ant-table-body-outer {
+                .ant-table-body-inner {
+                  overflow-x: auto !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.vben-basic-table.tron-table {
+  .ant-form,
+  .ant-table-wrapper {
+    border-radius: 5px !important;
+    border: 1px solid #c8d0df !important;
+  }
+}
+
+// .ant-radio-button-wrapper-checked {
+//   background: #989fae !important;
+//   border: #989fae !important;
+// }
+
+// .ant-radio-button-wrapper:hover {
+//   color: #989fae !important;
+// }

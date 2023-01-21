@@ -1,0 +1,16 @@
+{
+  "outputFolder": "src/api",
+  "requestCreateLib": "/@/utils/http/axios",
+  "requestCreateMethod": "createRequest",
+  "apiSpecsPaths": [
+    {
+      "name": "apis",
+      "path": "http://192.168.137.75:5222/swagger"
+    }
+  ],
+  "options": {
+    "withComments": true,
+    "typeWithPrefix": false,
+    "backwardCompatible": false
+  }
+}
