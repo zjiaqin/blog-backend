@@ -39,7 +39,7 @@ function asyncImportRoute(routes: AppRouteRecordRaw[] | undefined) {
     children && asyncImportRoute(children);
   });
 }
-
+// 动态引入路由
 function dynamicImport(
   dynamicViewsModules: Record<string, () => Promise<Recordable>>,
   component: string,

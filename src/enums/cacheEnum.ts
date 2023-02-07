@@ -6,6 +6,8 @@ export const LOCALE_KEY = 'LOCALE__';
 // user info key
 export const USER_INFO_KEY = 'USER__INFO__';
 
+// user id info key
+export const USER_INFOID_KEY = 'USER_INFOID_KEY';
 // role info key
 export const ROLES_KEY = 'ROLES__KEY__';
 
@@ -29,3 +31,4 @@ export enum CacheTypeEnum {
   SESSION,
   LOCAL,
 }
+USER_INFOID_KEY;

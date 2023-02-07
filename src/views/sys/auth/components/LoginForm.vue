@@ -1,10 +1,10 @@
 <template>
   <LoginFormTitle :title="t('custom.D2LL4SJom2DBCys9HUmzM')" />
   <Form class="p-4 enter-x" @keypress.enter="handleLogin">
-    <FormItem name="email" class="enter-x" v-bind="validateInfos.account">
+    <FormItem name="email" class="enter-x" v-bind="validateInfos.username">
       <Input
         size="large"
-        v-model:value="formData.account"
+        v-model:value="formData.username"
         :placeholder="t('custom.SNzfxbXTMm0XU5ofoB8Pn')"
         class="fix-auto-fill"
       >
@@ -25,20 +25,7 @@
         </template>
       </InputPassword>
     </FormItem>
-    <FormItem name="captcha" class="enter-x" v-bind="validateInfos.captcha">
-      <div class="verify-code">
-        <Input
-          size="large"
-          v-model:value="formData.captcha"
-          :placeholder="t('custom.HK9HExMWvljzfqzJ6puZ-')"
-        >
-          <template #prefix>
-            <Icon icon="ant-design:safety-outlined" color="#266EF2" />
-          </template>
-        </Input>
-        <img :src="getCaptchaBase64?.data" @click="setCaptchaBase64" />
-      </div>
-    </FormItem>
+    <FormItem name="captcha" class="enter-x" v-bind="validateInfos.captcha" />
     <FormItem class="enter-x">
       <Button type="primary" size="large" block @click="handleLogin" :loading="loading">
         {{ loading ? t('custom.MJ7-YNvHZbvjR2XLty11M') : t('custom.D2LL4SJom2DBCys9HUmzM') }}
@@ -63,20 +50,18 @@
   </Form>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, watch } from 'vue';
+  import { reactive, ref } from 'vue';
   import { Form, FormItem, Input, InputPassword, Button, message } from 'ant-design-vue';
   import { Icon } from '/@/components/Icon';
-
+  // import  axios from 'axios'
   import LoginFormTitle from './LoginFormTitle.vue';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useUserStore } from '/@/store/modules/user';
 
   import { useDesign } from '/@/hooks/web/useDesign';
-  import { router } from '/@/router';
 
   import { registerAndLoginFormRuleConfig } from '../config/formRuleConfig';
-  import { useCaptcha } from '../hooks/useCaptcha';
 
   const { t } = useI18n();
 
@@ -84,19 +69,11 @@
 
   const { notification, createErrorModal } = useMessage();
   const { prefixCls } = useDesign('login');
-  const { getCaptchaBase64, setCaptchaBase64 } = useCaptcha();
-  setCaptchaBase64();
-
-  watch(getCaptchaBase64, (newValue) => {
-    formData.captcha_id = newValue?.id as string;
-  });
 
   const loading = ref(false);
   const formData = reactive({
-    account: '',
+    username: '',
     password: '',
-    captcha: '',
-    captcha_id: '',
   });
 
   const userForm = Form.useForm;
@@ -106,15 +83,19 @@
   function handleResponseCode(code: number, responseMessage: string) {
     if (code === 15024) {
       // 15024：验证邮箱
-      router.replace({ name: 'PendingVerify', query: { email: formData.account, type: 1 } });
+      // router.replace({ name: 'PendingVerify', query: { email: formData.account, type: 1 } });
     } else {
       message.error(responseMessage);
-      setCaptchaBase64();
     }
   }
 
   // 登录
   async function handleLogin() {
+    let param = new URLSearchParams();
+
+    param.append('username', formData.username);
+    param.append('password', formData.password);
+
     validate().then(async () => {
       try {
         loading.value = true;
@@ -125,11 +106,12 @@
             mode: 'none',
           })
           .catch((err) => {
-            console.log(err.code);
             handleResponseCode(err.code, err.message);
           });
 
         if (userInfo) {
+          console.log(666);
+
           notification.success({
             message: t('sys.login.loginSuccessTitle'),
             description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.name}`,
@@ -137,7 +119,6 @@
           });
         }
       } catch (error) {
-        setCaptchaBase64();
         createErrorModal({
           title: t('sys.api.errorTip'),
           content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),

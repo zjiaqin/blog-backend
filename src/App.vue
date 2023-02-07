@@ -15,7 +15,7 @@
   import 'dayjs/locale/zh-cn';
 
   import { onMounted } from 'vue';
-  import { useUserStore } from '/@/store/modules/user';
+  // import { useUserStore } from '/@/store/modules/user';
 
   // support Multi-language
   const { getAntdLocale } = useLocale();
@@ -23,8 +23,7 @@
   // Listening to page changes and dynamically changing site titles
   useTitle();
   onMounted(() => {
-    const userSotre = useUserStore();
-
-    userSotre.pollGetUserInfo();
+    // const userSotre = useUserStore();
+    // userSotre.pollGetUserInfo();
   });
 </script>

@@ -15,8 +15,9 @@ import { setObjToUrlParams, deepMerge } from '/@/utils';
 import { useErrorLogStoreWithOut } from '/@/store/modules/errorLog';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { joinTimestamp, formatRequestDate } from './helper';
-import { useUserStore, useUserStoreWithOut } from '/@/store/modules/user';
+import { useUserStoreWithOut } from '/@/store/modules/user';
 import { AxiosRetry } from '/@/utils/http/axios/axiosRetry';
+import { getToken } from '/@/utils/auth';
 import axios from 'axios';
 
 const globSetting = useGlobSetting();
@@ -50,12 +51,12 @@ const transform: AxiosTransform = {
       throw new Error(t('sys.api.apiRequestFailed'));
     }
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-    const { code, data: result, msg: message } = data;
+    const { code, data: result, message: message } = data;
 
     // 分页接口
-    if (data.pagination) {
-      result.total = data.pagination.total;
-    }
+    // if (data.pagination) {
+    //   result.total = data.pagination.total;
+    // }
 
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
@@ -68,9 +69,9 @@ const transform: AxiosTransform = {
     let timeoutMsg = '';
     switch (code) {
       case ResultEnum.TIMEOUT:
-        timeoutMsg = t('sys.api.timeoutMessage');
+        timeoutMsg = '登录超时,请重新登录!';
         const userStore = useUserStoreWithOut();
-        // userStore.setToken(undefined);
+        userStore.setToken(undefined);
         userStore.logout(true);
         break;
       default:
@@ -151,12 +152,13 @@ const transform: AxiosTransform = {
    */
   requestInterceptors: (config, options) => {
     // 请求之前处理config
-    // if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
-    //   // jwt token
-    //   (config as Recordable).headers.token = options.authenticationScheme
-    //     ? `${options.authenticationScheme} ${token}`
-    //     : token;
-    // }
+    const token = getToken();
+    if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
+      // jwt token
+      (config as Recordable).headers.Authorization = options.authenticationScheme
+        ? `${options.authenticationScheme} ${token}`
+        : token;
+    }
 
     // (config as Recordable).headers.token = '';
 
@@ -172,9 +174,6 @@ const transform: AxiosTransform = {
     // if (token) {
     //   useUserStore().setToken(token);
     // }
-
-    useUserStore().hasToken = hasToken();
-
     return res;
   },
 
@@ -299,7 +298,3 @@ export const createRequest = <TReq, TResp extends Result<any>>(
     return defHttp.request<TResp['data']>(requestConfigCreator(args), options);
   };
 };
-
-export function hasToken() {
-  return document.cookie.includes('has_token=1');
-}

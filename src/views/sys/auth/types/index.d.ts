@@ -1,6 +1,5 @@
 import {
   authRegister,
-  getCaptcha,
   registerVerifyApi,
   authForgetPassword,
   forgetPasswordVerifyApi,
@@ -10,8 +9,6 @@ import type { ApiParam, ApiData } from '/#/axios';
 
 export type authRegisterType = ApiData<typeof authRegister>;
 
-// 获取验证码
-export type captchaGetType = ApiData<typeof getCaptcha>;
 // 注册验证
 export type verifyRegisterType = ApiParam<typeof registerVerifyApi>;
 

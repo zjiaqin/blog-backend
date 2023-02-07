@@ -27,8 +27,8 @@ export const passwordRule = [
     validator(_rule: Rule, value: string) {
       if (!value) return Promise.reject(t('custom.MDgyuUbUsE9PqnlIMG_-X'));
       password.value = value;
-      // 密码大于 8位数
-      if (value.length >= 8) {
+      // 密码大于 6位数
+      if (value.length >= 6) {
         return Promise.resolve();
       } else {
         return Promise.reject(t('custom.SMReLG-0zs4IIQG320mGt'));
@@ -96,8 +96,8 @@ export const changePasswordFormRuleConfig = () => {
       {
         validator(_rule: Rule, value: string) {
           if (!value) return Promise.reject(t('custom.MDgyuUbUsE9PqnlIMG_-X'));
-          // 密码大于 8位数
-          if (value.length >= 8) {
+          // 密码大于 6位数
+          if (value.length >= 6) {
             return Promise.resolve();
           } else {
             return Promise.reject(t('custom.SMReLG-0zs4IIQG320mGt'));

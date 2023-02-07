@@ -2,9 +2,9 @@
  * @description: Request result set
  */
 export enum ResultEnum {
-  SUCCESS = 0,
+  SUCCESS = 20000,
   ERROR = -1,
-  TIMEOUT = 401,
+  TIMEOUT = 40001,
   TYPE = 'success',
 }
 

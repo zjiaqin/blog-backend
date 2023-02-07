@@ -5,7 +5,7 @@
   "apiSpecsPaths": [
     {
       "name": "apis",
-      "path": "http://192.168.137.75:5222/swagger"
+      "path": "http://127.0.0.1:4523/export/openapi?specialPurpose=openapi-generator"
     }
   ],
   "options": {

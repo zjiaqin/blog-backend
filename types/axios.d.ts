@@ -1,4 +1,4 @@
-import type { Pagination } from '/@/api/apis';
+// import type { Pagination } from '/@/api/apis';
 
 export type ErrorMessageMode = 'none' | 'modal' | 'message' | undefined;
 
@@ -35,12 +35,10 @@ export interface RetryRequest {
   waitTime: number;
 }
 export interface Result<T = any> {
-  code: number;
-  type?: 'success' | 'error' | 'warning';
-  msg: string;
-  data: T;
-  request_id: string;
-  pagination?: Pagination;
+  code?: number;
+  message?: string;
+  data?: T;
+  flag?: boolean;
 }
 
 // multipart/form-data: upload file
