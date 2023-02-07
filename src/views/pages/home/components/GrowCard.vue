@@ -14,7 +14,7 @@
 
         <div class="py-4 px-4 flex justify-between items-center">
           <CountTo :startVal="0" :endVal="item.total" class="text-3xl" />
-          <Icon :icon="item.icon" :size="40" />
+          <Icon :icon="item.icon" :size="40" :color="item.color" />
         </div>
       </Card>
     </template>
@@ -47,35 +47,36 @@
   const growCardList = computed<GrowCardItem[]>(() => [
     {
       title: '访问数',
-      icon: 'visit-count',
-
+      icon: 'ion:footsteps',
       total: statisticList.value?.viewsCount ?? 0,
-      color: 'green',
+      color: 'pink',
       action: '至今',
     },
     {
       title: '用户量',
-      icon: 'total-sales',
-
+      icon: 'ion:md-contacts',
       total: statisticList.value?.userCount ?? 0,
       color: 'blue',
       action: '至今',
     },
     {
       title: '文章量',
-      icon: 'download-count',
-
+      icon: 'ion:reader',
       total: statisticList.value?.articleCount ?? 0,
       color: 'orange',
       action: '至今',
     },
     {
       title: '留言量',
-      icon: 'transaction',
-
+      icon: 'ion:md-chatboxes',
       total: statisticList.value?.messageCount ?? 0,
       color: 'purple',
       action: '至今',
     },
   ]);
 </script>
+<style>
+  .aa {
+    color: skyblue;
+  }
+</style>
