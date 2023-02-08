@@ -54,7 +54,7 @@
     },
     {
       title: '用户量',
-      icon: 'ion:md-contacts',
+      icon: 'ion:people-sharp',
       total: statisticList.value?.userCount ?? 0,
       color: 'blue',
       action: '至今',
