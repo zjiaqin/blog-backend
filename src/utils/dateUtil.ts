@@ -21,3 +21,11 @@ export function formatToDate(
 }
 
 export const dateUtil = dayjs;
+
+export const dataToZhCN = (DateStr) => {
+  const DATE = new Date(DateStr);
+  const year = DATE.getFullYear() + '年';
+  const month = DATE.getMonth() + 1 + '月';
+  const date = DATE.getDate() + '日';
+  return year + month + date;
+};

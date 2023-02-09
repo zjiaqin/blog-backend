@@ -9,7 +9,7 @@
       <VisitAnalysis />
     </p>
     <p v-if="activeKey === 'tab2'">
-      <VisitAnalysisBar />
+      <DailyArticleCount />
     </p>
   </Card>
 </template>
@@ -17,18 +17,18 @@
   import { ref } from 'vue';
   import { Card } from 'ant-design-vue';
   import VisitAnalysis from './VisitAnalysis.vue';
-  import VisitAnalysisBar from './VisitAnalysisBar.vue';
+  import DailyArticleCount from './DailyArticleCount.vue';
 
   const activeKey = ref('tab1');
 
   const tabListTitle = [
     {
       key: 'tab1',
-      tab: '流量趋势',
+      tab: '一周访问量',
     },
     {
       key: 'tab2',
-      tab: '访问量',
+      tab: '文章发布统计',
     },
   ];
 

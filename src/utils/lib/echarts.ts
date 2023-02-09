@@ -8,6 +8,7 @@ import {
   PictorialBarChart,
   RadarChart,
   ScatterChart,
+  EffectScatterChart,
 } from 'echarts/charts';
 
 import {
@@ -52,6 +53,7 @@ echarts.use([
   CalendarComponent,
   GraphicComponent,
   ScatterChart,
+  EffectScatterChart,
 ]);
 
 export default echarts;
