@@ -32,11 +32,11 @@
   const initChart = () => {
     formatData();
 
-    // const data = state.seriesData;
-    const data = [
-      ['2022-1-5', 100],
-      ['2022-1-6', 58],
-    ];
+    const data = state.seriesData;
+    // const data = [
+    //   ['2022-1-5', 100],
+    //   ['2022-1-6', 58],
+    // ];
     const option: EChartsOption = {
       tooltip: {
         trigger: 'item',
@@ -49,9 +49,8 @@
         },
       },
       legend: {
-        top: '30',
-        left: '500',
-
+        top: '0',
+        left: 'center',
         data: ['Articles', 'Top 12'],
         textStyle: {
           color: '#000',
@@ -59,9 +58,11 @@
       },
       calendar: [
         {
-          top: 100,
-          left: 'center',
+          top: 50,
+          left: 50,
+          right: 50,
           range: ['2022'],
+          cellSize: ['auto', 'auto'],
           splitLine: {
             show: true,
             lineStyle: {

@@ -151,3 +151,45 @@ export const filterInputNumber = (e: any, type = 'float'): string | number | any
   }
   return val && typeof e == 'number' ? Number(val) : val;
 };
+
+// echart多柱图自动设置y轴最大最小值
+
+export const calMaxAndMin = (arr) => {
+  const yAxisData: Array<number>[] = [];
+  const maxArr: number[] = [];
+  const minArr: number[] = [];
+  arr.forEach((item) => {
+    yAxisData.push(item.data);
+  });
+  yAxisData.forEach((item, index) => {
+    maxArr[index] = Math.max(...item);
+    minArr[index] = Math.min(...item);
+  });
+  return { maxArr, minArr };
+};
+
+export const eChartOptionAdd = (option) => {
+  const { maxArr, minArr } = calMaxAndMin(option.series);
+  option.yAxis.forEach((item, index) => {
+    if (item.max) return;
+    item.max = maxArr[index];
+    item.min = minArr[index];
+    if (item.max > 0) {
+      const maxDigit = Math.floor(Math.log(Math.abs(item.max)) / Math.log(10)) - 1;
+      const maxMultiple = Math.pow(10, maxDigit);
+      item.max = Math.ceil((Math.abs(item.max) * 1.2) / maxMultiple) * maxMultiple;
+    } else {
+      item.max = 0;
+    }
+    if (item.min >= 0) {
+      item.min = 0;
+    } else {
+      const minDigit = Math.floor(Math.log(-item.min) / Math.log(10)) - 1;
+      const minMultiple = Math.pow(10, minDigit);
+      item.min = -Math.ceil((Math.abs(item.min) * 1.2) / minMultiple) * minMultiple;
+    }
+
+    // item.interval = (item.max - item.min) / 5;
+  });
+};
+// 获取单柱图的y轴最大值

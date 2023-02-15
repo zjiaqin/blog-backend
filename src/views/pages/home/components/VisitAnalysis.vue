@@ -17,14 +17,17 @@
   type State = {
     xAxisData?: string[];
     seriesData?: number[];
+    YAxisMax?: number;
   };
-  const state = reactive<State>({ xAxisData: undefined, seriesData: undefined });
+  const state = reactive<State>({ xAxisData: undefined, seriesData: undefined, YAxisMax: 0 });
+  const { statisticList } = storeToRefs(useStatistics());
 
   function formatData() {
     state.xAxisData = statisticList.value?.uniqueViewDTOs?.map((item) => item.day ?? '0');
     state.seriesData = statisticList.value?.uniqueViewDTOs?.map((item) => item.viewsCount ?? 0);
+    state.YAxisMax = Math.max(...(state.seriesData ?? [])) * 1.2;
   }
-  const { statisticList } = storeToRefs(useStatistics());
+
   const initChart = () => {
     formatData();
     const option: EChartsOption = {
@@ -56,8 +59,8 @@
       yAxis: [
         {
           type: 'value',
-          max: 100,
-          splitNumber: 4,
+          max: state.YAxisMax,
+          splitNumber: 6,
           axisTick: {
             show: false,
           },
@@ -69,7 +72,7 @@
           },
         },
       ],
-      grid: { left: '1%', right: '1%', top: '2  %', bottom: 0, containLabel: true },
+      grid: { left: '1%', right: '1%', top: '2%', bottom: 0, containLabel: true },
       series: [
         {
           smooth: true,
