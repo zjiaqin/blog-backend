@@ -11,10 +11,7 @@
     </div>
     <div class="md:flex enter-y !mt-4">
       <Map class="w-full md:w-2/3" :loading="statistics.loading" />
-      <SalesProductPie
-        class="md:w-1/3 w-full !md:ml-4 !md:my-0 !my-4"
-        :loading="statistics.loading"
-      />
+      <TagCloud class="md:w-1/3 w-full !md:ml-4 !md:my-0 !my-4" :loading="statistics.loading" />
     </div>
   </div>
 </template>
@@ -26,6 +23,7 @@
   import SalesProductPie from './components/SalesProductPie.vue';
   import Map from './components/Map.vue';
   import { useStatistics } from '/@/store/modules/statistics';
+  import TagCloud from './components/TagCloud.vue';
 
   const statistics = useStatistics();
 
