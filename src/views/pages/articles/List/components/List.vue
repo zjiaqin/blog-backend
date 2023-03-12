@@ -7,13 +7,7 @@
 <script setup lang="ts">
   import { BasicTable, useTable } from '/@/components/Table';
   import { listArticlesAdminUsingGet } from '/@/api/apis';
-  import {
-    getBasicColumns,
-    getFormConfig,
-    getModalFormConfig,
-    ModalStatuEnum,
-    setOption,
-  } from '../configs';
+  import { getBasicColumns, getFormConfig, getModalFormConfig, ModalStatuEnum } from '../config';
   const [registerTable] = useTable({
     api: listArticlesAdminUsingGet,
     columns: getBasicColumns(),
@@ -24,7 +18,6 @@
       position: ['bottomCenter'],
     },
   });
-  console.log(setOption());
 </script>
 
 <style lang="less" scoped></style>

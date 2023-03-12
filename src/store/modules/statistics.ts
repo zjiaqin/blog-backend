@@ -29,7 +29,6 @@ export const useStatistics = defineStore({
       const res = await getBlogBackInfoUsingGet(undefined);
       this.setStatisticList(res);
       this.changeLoading(false);
-      console.log(res);
     },
   },
 });

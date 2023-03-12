@@ -54,8 +54,8 @@ const transform: AxiosTransform = {
     const { code, data: result, message: message } = data;
 
     // 分页接口
-    // if (data.pagination) {
-    //   result.total = data.pagination.total;
+    // if (data?.data?.count) {
+    //   result.total = data.data.count;
     // }
 
     // 这里逻辑可以根据项目进行修改

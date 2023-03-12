@@ -1,4 +1,3 @@
-import { type } from 'os';
 import { FormProps } from '/@/components/Table';
 import { BasicColumn } from '/@/components/Table/src/types/table';
 
@@ -87,10 +86,11 @@ export function getFormConfig(): Partial<FormProps> {
       {
         field: `type`,
         label: '',
-        component: 'Select',
+        component: 'ApiSelect',
         componentProps: {
-          placeholder: '请选择文章类型',
-          option: setOption(),
+          api: setOption,
+          labelField: 'label',
+          valueField: 'value',
         },
       },
       {
@@ -135,23 +135,22 @@ export function getFormConfig(): Partial<FormProps> {
   };
 }
 
-export const typeMap = new Map({
-  1: '原创',
-  2: '转载',
-  3: '翻译',
-});
+export const typeMap = new Map([
+  [1, '原创'],
+  [2, '转载'],
+  [3, '翻译'],
+]);
 
 export type Option = {
-  label: string | number;
-  value: string;
+  label: string;
+  value: string | number;
 };
 
-export const setOption = () => {
+export const setOption = async (): Promise<Option[]> => {
   const optionArr: Option[] = [];
-  for (const [key, value] of Object.entries(typeMap)) {
-    const obj: Option = { label: key, value };
+  for (const [key, value] of typeMap.entries()) {
+    const obj: Option = { label: value, value: key };
     optionArr.push(obj);
   }
-
   return optionArr;
 };
