@@ -1,5 +1,5 @@
 <template>
-  <div class="categories-list-table">
+  <div class="Tags-list-table">
     <BasicTable @register="registerTable">
       <template #tableTitle>
         <AButton type="primary" class="mr-2" @click="openPopup(ModalStatuEnum.ADD)">
@@ -16,6 +16,9 @@
         </AButton>
       </template>
       <template #bodyCell="{ column, record }: { column: any, record: _listResp[0] }">
+        <template v-if="column.key === 'tagName'">
+          <Tag color="cyan">{{ record[column.key] }}</Tag>
+        </template>
         <template v-if="column.key === 'operate'">
           <AButton
             size="small"
@@ -45,11 +48,12 @@
 </template>
 
 <script setup lang="ts">
+  import { Tag } from 'ant-design-vue';
   import { ref, reactive } from 'vue';
   import { Time } from '/@/components/Time';
   import { Popup } from './index';
   import { BasicTable, useTable } from '/@/components/Table';
-  import { listCategoriesAdminUsingGet, deleteCategoriesUsingDelete } from '/@/api/apis';
+  import { listTagsAdminUsingGet, deleteTagUsingDelete } from '/@/api/apis';
   import { getBasicColumns, getFormConfig, ModalStatuEnum } from '../config';
   import { useModal } from '/@/components/Modal';
   import type { listResp as _listResp } from '../types';
@@ -58,7 +62,7 @@
   const { createMessage } = useMessage();
 
   const [registerTable, { reload }] = useTable({
-    api: listCategoriesAdminUsingGet,
+    api: listTagsAdminUsingGet,
     rowKey: (record) => {
       return record.id;
     }, //指定每行的key,用于多选框获取待操作的ID
@@ -77,9 +81,10 @@
   });
 
   const [registerModal, { openModal, setModalProps }] = useModal();
+
   // 修改分类（新增或编辑）
   function openPopup(mode: ModalStatuEnum, row: _listResp[0] = {}) {
-    setModalProps({ title: `${mode}分类` });
+    setModalProps({ title: `${mode}标签` });
     openModal(true, row);
   }
 
@@ -95,7 +100,7 @@
     btnLoading.loading = true;
     const requestBody: number[] = id === -1 ? selectedID.value : [id];
     try {
-      await deleteCategoriesUsingDelete({ requestBody });
+      await deleteTagUsingDelete({ requestBody });
       createMessage.success('操作成功');
     } catch {}
     btnLoading.loading = false;

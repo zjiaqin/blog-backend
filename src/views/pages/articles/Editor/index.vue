@@ -1,7 +1,10 @@
 <template>
-  <div class="container">editor</div>
+  <PageWrapper><FromEditor /></PageWrapper>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { FromEditor } from './components';
+  import { PageWrapper } from '/@/components/Page';
+</script>
 
 <style lang="less" scoped></style>
