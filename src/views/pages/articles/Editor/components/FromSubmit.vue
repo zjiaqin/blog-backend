@@ -8,7 +8,7 @@
     :showCancelBtn="false"
     :showOkBtn="false"
   >
-    <BasicForm @register="registerForm" @submit="handleSubmit" />
+    <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
 

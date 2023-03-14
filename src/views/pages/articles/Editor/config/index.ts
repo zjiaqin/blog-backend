@@ -1,6 +1,9 @@
 import { FormProps } from '/@/components/Table';
 import { MarkDown } from '/@/components/Markdown';
-import { h } from 'vue';
+import { h, unref } from 'vue';
+import { listCategoriesAdminBySearchUsingGet, listTagsAdminBySearchUsingGet } from '/@/api/apis';
+import type { Rule } from 'ant-design-vue/es/form';
+import { typeOption } from '../../List/config';
 
 export function getFormConfig(): Partial<FormProps> {
   return {
@@ -24,7 +27,7 @@ export function getFormConfig(): Partial<FormProps> {
         field: 'articleTitle',
         component: 'Input',
         label: '',
-        rules: [{ required: true, message: '请输入标题' }],
+        // rules: [{ required: true, message: '请输入标题' }],
         componentProps: {
           placeholder: '请输入文章标题',
         },
@@ -45,7 +48,7 @@ export function getFormConfig(): Partial<FormProps> {
         field: 'articleContent',
         component: 'Input',
         label: '',
-        rules: [{ required: true, trigger: 'blur', message: '请输入文章内容' }],
+        // rules: [{ required: true, trigger: 'blur', message: '请输入文章内容' }],
         render: ({ model, field }) => {
           return h(MarkDown, {
             value: model[field],
@@ -70,59 +73,102 @@ export function getModalFormConfig(): Partial<FormProps> {
 
     schemas: [
       {
-        field: `tagName`,
+        field: `categoryName`,
         label: '文章分类',
-        component: 'Input',
+        component: 'ApiSelect',
+        itemProps: { validateTrigger: 'blur' },
         componentProps: {
-          placeholder: '请输入标签名称',
+          placeholder: '请选择分类',
+          api: listCategoriesAdminBySearchUsingGet,
+          labelField: 'categoryName',
+          valueField: 'categoryName',
         },
         rules: [{ required: true }],
       },
       {
-        field: `tagName`,
+        field: `tagNames`,
         label: '文章标签',
-        component: 'Input',
+        component: 'ApiSelect',
+        itemProps: { validateTrigger: 'blur' },
         componentProps: {
-          placeholder: '请输入标签名称',
+          placeholder: '请选择标签',
+          api: listTagsAdminBySearchUsingGet,
+          labelField: 'tagName',
+          valueField: 'tagName',
+          mode: 'tags',
         },
-        rules: [{ required: true }],
+        rules: [{ validator: validateSelect }],
+        required: true,
       },
       {
-        field: `tagName`,
+        field: `type`,
         label: '文章类型',
-        component: 'Input',
+        component: 'Select',
+        itemProps: { validateTrigger: 'blur' },
         componentProps: {
-          placeholder: '请输入标签名称',
+          placeholder: '请选择类型',
+          options: typeOption,
         },
-        rules: [{ required: true }],
+        required: true,
       },
       {
-        field: `tagName`,
+        field: `articleCover`,
         label: '上传封面',
         component: 'Input',
-        componentProps: {
-          placeholder: '请输入标签名称',
-        },
+        componentProps: {},
         rules: [{ required: true }],
       },
       {
-        field: `tagName`,
+        field: `isTop`,
         label: '置顶',
-        component: 'Input',
+        component: 'Switch',
+        defaultValue: 0,
         componentProps: {
-          placeholder: '请输入标签名称',
+          checkedValue: 1,
+          unCheckedValue: 0,
         },
-        rules: [{ required: true }],
       },
       {
-        field: `tagName`,
+        field: `isFeatured`,
         label: '推荐',
+        component: 'Switch',
+        defaultValue: 0,
+        componentProps: {
+          checkedValue: 1,
+          unCheckedValue: 0,
+        },
+      },
+      {
+        field: `status`,
+        label: '发布形式',
+        component: 'RadioGroup',
+        defaultValue: 1,
+        componentProps: {
+          options: [
+            {
+              label: '公开',
+              value: 1,
+            },
+            {
+              label: '密码',
+              value: 2,
+            },
+          ],
+        },
+      },
+      {
+        field: `password`,
+        label: '访问密码',
         component: 'Input',
         componentProps: {
-          placeholder: '请输入标签名称',
+          placeholder: '请输入密码',
         },
-        rules: [{ required: true }],
+        required: true,
+        show: ({ model }) => {
+          return unref(model)['status'] === 2;
+        },
       },
+
       //  隐藏字段
       {
         field: `id`,
@@ -153,3 +199,11 @@ export enum ModalStatuEnum {
   EDIT = '编辑文章',
   ADD = '发布文章',
 }
+
+const validateSelect = async (_rule: Rule, value: any) => {
+  if (unref(value)?.length > 3) {
+    return Promise.reject('标签不能超过3个');
+  } else {
+    return Promise.resolve();
+  }
+};

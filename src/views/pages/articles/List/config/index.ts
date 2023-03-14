@@ -86,11 +86,9 @@ export function getFormConfig(): Partial<FormProps> {
       {
         field: `type`,
         label: '',
-        component: 'ApiSelect',
+        component: 'Select',
         componentProps: {
-          api: setOption,
-          labelField: 'label',
-          valueField: 'value',
+          option: typeOption,
         },
       },
       {
@@ -135,22 +133,13 @@ export function getFormConfig(): Partial<FormProps> {
   };
 }
 
-export const typeMap = new Map([
-  [1, '原创'],
-  [2, '转载'],
-  [3, '翻译'],
-]);
-
 export type Option = {
   label: string;
-  value: string | number;
+  value: number;
 };
 
-export const setOption = async (): Promise<Option[]> => {
-  const optionArr: Option[] = [];
-  for (const [key, value] of typeMap.entries()) {
-    const obj: Option = { label: value, value: key };
-    optionArr.push(obj);
-  }
-  return optionArr;
-};
+export const typeOption: Option[] = [
+  { label: '原创', value: 1 },
+  { label: '转载', value: 2 },
+  { label: '翻译', value: 3 },
+];

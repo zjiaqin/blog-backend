@@ -5,8 +5,8 @@
         <AButton type="primary" @click="openPopup">{{ ModalStatuEnum.ADD }}</AButton>
       </template>
     </BasicForm>
-    <MyTag @toAdd="add" color="pink" />
     <FromSubmit @register="registerModal" />
+    <MyUpload />
   </CollapseContainer>
 </template>
 
@@ -16,7 +16,8 @@
   import { getFormConfig, ModalStatuEnum } from '../config';
   import { FromSubmit } from '../components';
   import { useModal } from '/@/components/Modal';
-  import { MyTag } from '/@/components/Tag';
+  import { MyUpload } from '/@/components/MyUpload';
+
   const [register, { validate, getFieldsValue }] = useForm(getFormConfig());
 
   const [registerModal, { openModal, setModalProps }] = useModal();
@@ -29,10 +30,6 @@
       openModal(true, getFieldsValue());
     } catch {}
   }
-
-  const add = () => {
-    console.log(999);
-  };
 </script>
 
 <style lang="less" scoped></style>
