@@ -1,87 +1,98 @@
 <template>
-  <Upload
-    v-model:file-list="fileList"
-    name="file"
-    list-type="picture-card"
-    class="avatar-uploader"
-    :show-upload-list="false"
-    :customRequest="upload"
-    :before-upload="beforeUpload"
-    @change="handleChange"
-  >
-    <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
-    <div v-else>
-      <loading-outlined v-if="loading" />
-      <plus-outlined v-else />
-      <div class="ant-upload-text">Upload</div>
-    </div>
-  </Upload>
+  <div class="clearfix">
+    <Upload
+      v-model:file-list="fileList"
+      :customRequest="upload"
+      list-type="picture-card"
+      :beforeUpload="beforeUpload"
+      @preview="handlePreview"
+      :max-count="1"
+    >
+      <div>
+        <plus-outlined />
+        <div style="margin-top: 8px">Upload</div>
+      </div>
+    </Upload>
+    <Modal :visible="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
+      <img alt="example" style="width: 100%" :src="previewImage" />
+    </Modal>
+  </div>
 </template>
 <script lang="ts" setup>
-  import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
-  import { message, Upload } from 'ant-design-vue';
+  import { PlusOutlined } from '@ant-design/icons-vue';
+  import { Upload, Modal } from 'ant-design-vue';
   import { ref } from 'vue';
-  import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
-
+  import type { UploadProps } from 'ant-design-vue';
+  import { useMessage } from '/@/hooks/web/useMessage';
   import { saveArticleImagesUsingPost } from '/@/api/apis';
 
-  async function upload(file) {
+  const emits = defineEmits(['change']);
+  const { createMessage } = useMessage();
+  async function upload(e) {
     const formData = new FormData();
-    formData.append('file', file.file);
-    console.log(file);
-    file.onSuccess();
+    formData.append('file', e.file);
+    const data = { a: '666' };
+    e.onSuccess(data, e);
 
-    // try {
-    //   await saveArticleImagesUsingPost({ requestBody: formData as any });
-    // } catch {}
+    try {
+      const res = await saveArticleImagesUsingPost({ requestBody: formData as any });
+      emits('change', res);
+      e.onSuccess(res, e);
+    } catch (err) {
+      e.onError(err);
+    }
+  }
+  function getBase64(file: File) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
   }
 
-  function getBase64(img: Blob, callback: (base64Url: string) => void) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result as string));
-    reader.readAsDataURL(img);
-  }
+  const previewVisible = ref(false);
+  const previewImage = ref('');
+  const previewTitle = ref('');
 
-  const fileList = ref([]);
-  const loading = ref<boolean>(false);
-  const imageUrl = ref<string>('');
+  const fileList = ref<NonNullable<UploadProps['fileList']>>([]);
 
-  const handleChange = (info: UploadChangeParam) => {
-    if (info.file.status === 'uploading') {
-      loading.value = true;
-      return;
+  const handleCancel = () => {
+    previewVisible.value = false;
+    previewTitle.value = '';
+  };
+  const handlePreview = async (file: any) => {
+    if (!file.url && !file.preview) {
+      file.preview = (await getBase64(file.originFileObj)) as string;
     }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (base64Url: string) => {
-        imageUrl.value = base64Url;
-        loading.value = false;
-      });
-    }
-    if (info.file.status === 'error') {
-      loading.value = false;
-      message.error('upload error');
-    }
+    previewImage.value = file.url || file.preview;
+    previewVisible.value = true;
+    previewTitle.value = file.name || file.url.substring(file.url.lastIndexOf('/') + 1);
   };
 
-  const beforeUpload = (file: UploadProps['fileList'][number]) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG file!');
+  const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+    // 检查图片类型
+    const isJPG = file.type === 'image/jpeg';
+    const isPNG = file.type === 'image/png';
+    const isBMP = file.type === 'image/bmp';
+    const isGIF = file.type === 'image/gif';
+    const isWEBP = file.type === 'image/webp';
+    const isSVG = file.type === 'image/svg+xml';
+
+    const isPic = isJPG || isPNG || isBMP || isGIF || isWEBP || isSVG;
+    if (!isPic) {
+      createMessage.error('请上传图片');
+      return Upload.LIST_IGNORE;
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
+      createMessage.error('上传图片必须小于 2MB!');
+      return Upload.LIST_IGNORE;
     }
-    return isJpgOrPng && isLt2M;
+    return isPic && isLt2M;
   };
 </script>
 <style scoped lang="less">
-  .avatar-uploader > .ant-upload {
-    width: 128px;
-    height: 128px;
-  }
-
   .ant-upload-select-picture-card i {
     font-size: 32px;
     color: #999;

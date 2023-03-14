@@ -9,6 +9,7 @@
     :showOkBtn="false"
   >
     <BasicForm @register="registerForm" />
+    <button @click="test"> test</button>
   </BasicModal>
 </template>
 
@@ -23,9 +24,13 @@
     }
   });
 
-  const [registerForm, { setFieldsValue, submit, resetFields, validate }] = useForm(
+  const [registerForm, { setFieldsValue, submit, resetFields, validate, getFieldsValue }] = useForm(
     getModalFormConfig(),
   );
+
+  const test = () => {
+    console.log(getFieldsValue());
+  };
 </script>
 
 <style lang="less" scoped></style>

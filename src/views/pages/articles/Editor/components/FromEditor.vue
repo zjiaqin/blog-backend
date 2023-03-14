@@ -6,7 +6,6 @@
       </template>
     </BasicForm>
     <FromSubmit @register="registerModal" />
-    <MyUpload />
   </CollapseContainer>
 </template>
 
@@ -16,7 +15,6 @@
   import { getFormConfig, ModalStatuEnum } from '../config';
   import { FromSubmit } from '../components';
   import { useModal } from '/@/components/Modal';
-  import { MyUpload } from '/@/components/MyUpload';
 
   const [register, { validate, getFieldsValue }] = useForm(getFormConfig());
 

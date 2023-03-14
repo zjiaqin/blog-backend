@@ -198,5 +198,16 @@
       }
     ]
   },
-  "hidefiles.selectedProfile": "Strict"
+  "hidefiles.selectedProfile": "Strict",
+  "i18n-ally.extract.ignored": [
+    "上传图片必须小于 2MB!",
+    "请上传图片"
+  ],
+  "i18n-ally.extract.ignoredByFiles": {
+    "src\\components\\MyUpload\\src\\MyUpload.vue": [
+      "上传图片必须小于 2MB!",
+      "请上传图片",
+      "Upload"
+    ]
+  }
 }

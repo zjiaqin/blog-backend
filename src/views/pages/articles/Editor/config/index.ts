@@ -4,6 +4,7 @@ import { h, unref } from 'vue';
 import { listCategoriesAdminBySearchUsingGet, listTagsAdminBySearchUsingGet } from '/@/api/apis';
 import type { Rule } from 'ant-design-vue/es/form';
 import { typeOption } from '../../List/config';
+import { MyUpload } from '/@/components/MyUpload';
 
 export function getFormConfig(): Partial<FormProps> {
   return {
@@ -115,8 +116,16 @@ export function getModalFormConfig(): Partial<FormProps> {
         field: `articleCover`,
         label: '上传封面',
         component: 'Input',
-        componentProps: {},
-        rules: [{ required: true }],
+
+        render: ({ model, field }) => {
+          return h(MyUpload, {
+            value: model[field],
+            onChange: (value: string) => {
+              model[field] = value;
+            },
+          });
+        },
+        required: true,
       },
       {
         field: `isTop`,
