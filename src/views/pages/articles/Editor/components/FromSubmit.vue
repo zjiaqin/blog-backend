@@ -9,11 +9,7 @@
     :showOkBtn="false"
     @cancel="close"
   >
-<<<<<<< HEAD
     <BasicForm @register="registerForm" @submit="handleSubmit" />
-=======
-    <BasicForm @register="registerForm" />
->>>>>>> 4e2c221a5d223d2036211929e9dace63d37c6c6a
   </BasicModal>
 </template>
 
