@@ -73,6 +73,7 @@ export function getModalFormConfig(): Partial<FormProps> {
     submitButtonOptions: {
       text: '发布',
     },
+
     actionColOptions: {
       span: 22,
     },
