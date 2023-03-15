@@ -67,11 +67,13 @@ export function getFormConfig(): Partial<FormProps> {
 export function getModalFormConfig(): Partial<FormProps> {
   return {
     labelWidth: 100,
-    showActionButtonGroup: false,
     baseColProps: {
       span: 22,
     },
 
+    actionColOptions: {
+      span: 22,
+    },
     schemas: [
       {
         field: `categoryName`,

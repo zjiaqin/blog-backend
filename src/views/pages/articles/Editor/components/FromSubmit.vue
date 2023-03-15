@@ -9,7 +9,6 @@
     :showOkBtn="false"
   >
     <BasicForm @register="registerForm" />
-    <button @click="test"> test</button>
   </BasicModal>
 </template>
 
