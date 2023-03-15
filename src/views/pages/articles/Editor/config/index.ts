@@ -28,7 +28,7 @@ export function getFormConfig(): Partial<FormProps> {
         field: 'articleTitle',
         component: 'Input',
         label: '',
-        // rules: [{ required: true, message: '请输入标题' }],
+        rules: [{ required: true, message: '请输入标题' }],
         componentProps: {
           placeholder: '请输入文章标题',
         },
@@ -49,7 +49,7 @@ export function getFormConfig(): Partial<FormProps> {
         field: 'articleContent',
         component: 'Input',
         label: '',
-        // rules: [{ required: true, trigger: 'blur', message: '请输入文章内容' }],
+        rules: [{ required: true, trigger: 'blur', message: '请输入文章内容' }],
         render: ({ model, field }) => {
           return h(MarkDown, {
             value: model[field],
@@ -70,7 +70,9 @@ export function getModalFormConfig(): Partial<FormProps> {
     baseColProps: {
       span: 22,
     },
-
+    submitButtonOptions: {
+      text: '发布',
+    },
     actionColOptions: {
       span: 22,
     },
@@ -118,7 +120,6 @@ export function getModalFormConfig(): Partial<FormProps> {
         field: `articleCover`,
         label: '上传封面',
         component: 'Input',
-
         render: ({ model, field }) => {
           return h(MyUpload, {
             value: model[field],
@@ -174,10 +175,16 @@ export function getModalFormConfig(): Partial<FormProps> {
         componentProps: {
           placeholder: '请输入密码',
         },
-        required: true,
         show: ({ model }) => {
           return unref(model)['status'] === 2;
         },
+        required: false,
+        // dynamicRules: ({ model }) => {
+        //   if (unref(model)['status'] === 2) {
+        //     return [{ required: true }];
+        //   }
+        //   return [{ required: false }];
+        // },
       },
 
       //  隐藏字段

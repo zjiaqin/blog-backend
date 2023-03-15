@@ -201,13 +201,19 @@
   "hidefiles.selectedProfile": "Strict",
   "i18n-ally.extract.ignored": [
     "上传图片必须小于 2MB!",
-    "请上传图片"
+    "请上传图片",
+    "操作成功",
+    "操作成功"
   ],
   "i18n-ally.extract.ignoredByFiles": {
     "src\\components\\MyUpload\\src\\MyUpload.vue": [
       "上传图片必须小于 2MB!",
       "请上传图片",
       "Upload"
+    ],
+    "src\\views\\pages\\articles\\Editor\\components\\FromSubmit.vue": [
+      "文章发布成功",
+      "文章发布成功"
     ]
   }
 }

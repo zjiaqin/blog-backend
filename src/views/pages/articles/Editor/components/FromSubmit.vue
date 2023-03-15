@@ -7,8 +7,9 @@
     okText="保存"
     :showCancelBtn="false"
     :showOkBtn="false"
+    @cancel="close"
   >
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm" @submit="handleSubmit" />
   </BasicModal>
 </template>
 
@@ -16,19 +17,31 @@
   import { BasicForm, useForm } from '/@/components/Form';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { getModalFormConfig } from '../config';
+  import { saveOrUpdateArticleUsingPost } from '/@/api/apis';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
-  const [registerModal, { closeModal, changeOkLoading }] = useModalInner((data) => {
+  const { createMessage } = useMessage();
+  const [registerModal, { closeModal }] = useModalInner((data) => {
     if (data) {
       setFieldsValue(data);
     }
   });
 
-  const [registerForm, { setFieldsValue, submit, resetFields, validate, getFieldsValue }] = useForm(
-    getModalFormConfig(),
-  );
+  const [registerForm, { setFieldsValue, resetFields, validate }] = useForm(getModalFormConfig());
 
-  const test = () => {
-    console.log(getFieldsValue());
+  async function handleSubmit(value) {
+    try {
+      console.log(96999);
+
+      await validate();
+      await saveOrUpdateArticleUsingPost({ requestBody: value });
+      createMessage.success('文章发布成功');
+    } catch (error) {}
+  }
+
+  const close = () => {
+    resetFields();
+    closeModal();
   };
 </script>
 
