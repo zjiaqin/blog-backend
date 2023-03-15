@@ -9,7 +9,11 @@
     :showOkBtn="false"
     @cancel="close"
   >
-    <BasicForm @register="registerForm" @submit="handleSubmit" />
+    <BasicForm
+      @register="registerForm"
+      @submit="handleSubmit"
+      @reset="setFieldsValue(initialValue)"
+    />
   </BasicModal>
 </template>
 
@@ -19,10 +23,13 @@
   import { getModalFormConfig } from '../config';
   import { saveOrUpdateArticleUsingPost } from '/@/api/apis';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import { ref } from 'vue';
 
   const { createMessage } = useMessage();
+  const initialValue = ref(); //初始值，包括文章、标题及编辑模式下的所有参数
   const [registerModal, { closeModal }] = useModalInner((data) => {
     if (data) {
+      initialValue.value = data;
       setFieldsValue(data);
     }
   });

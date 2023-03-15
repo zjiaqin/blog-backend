@@ -180,12 +180,12 @@ export function getModalFormConfig(): Partial<FormProps> {
           return unref(model)['status'] === 2;
         },
         required: false,
-        // dynamicRules: ({ model }) => {
-        //   if (unref(model)['status'] === 2) {
-        //     return [{ required: true }];
-        //   }
-        //   return [{ required: false }];
-        // },
+        dynamicRules: ({ model }) => {
+          if (unref(model)['status'] === 2) {
+            return [{ required: true }];
+          }
+          return [{ required: false }];
+        },
       },
 
       //  隐藏字段

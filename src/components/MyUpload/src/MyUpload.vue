@@ -22,19 +22,19 @@
 <script lang="ts" setup>
   import { PlusOutlined } from '@ant-design/icons-vue';
   import { Upload, Modal } from 'ant-design-vue';
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import type { UploadProps } from 'ant-design-vue';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { saveArticleImagesUsingPost } from '/@/api/apis';
+  const props = defineProps<{
+    value?: string;
+  }>();
 
   const emits = defineEmits(['change']);
   const { createMessage } = useMessage();
   async function upload(e) {
     const formData = new FormData();
     formData.append('file', e.file);
-    const data = { a: '666' };
-    e.onSuccess(data, e);
-
     try {
       const res = await saveArticleImagesUsingPost({ requestBody: formData as any });
       emits('change', res);
@@ -92,9 +92,19 @@
     }
     return isPic && isLt2M;
   };
-  const remove = (file) => {
+  const remove = () => {
     emits('change', '');
   };
+  watch(
+    () => props.value,
+    () => {
+      if (props?.value) {
+        fileList.value = [{ name: 'oldPic', uid: '0', url: props.value }];
+      } else {
+        fileList.value = [];
+      }
+    },
+  );
 </script>
 <style scoped lang="less">
   .ant-upload-select-picture-card i {
