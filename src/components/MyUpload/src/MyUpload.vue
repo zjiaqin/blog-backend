@@ -7,6 +7,7 @@
       :beforeUpload="beforeUpload"
       @preview="handlePreview"
       :max-count="1"
+      @remove="remove"
     >
       <div>
         <plus-outlined />
@@ -90,6 +91,9 @@
       return Upload.LIST_IGNORE;
     }
     return isPic && isLt2M;
+  };
+  const remove = (file) => {
+    emits('change', '');
   };
 </script>
 <style scoped lang="less">
