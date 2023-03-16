@@ -28,11 +28,18 @@ export function getBasicColumns(): BasicColumn[] {
       title: '浏览量',
       dataIndex: 'viewsCount',
       width: 160,
+      format: (value) => {
+        return value ?? 0;
+      },
     },
     {
       title: '类型',
       dataIndex: 'type',
       width: 160,
+      format: (T: any) => {
+        const { label } = typeOption.find((value) => value.value === T) ?? { label: '其它' };
+        return label;
+      },
     },
     {
       title: '发表时间',
@@ -143,3 +150,11 @@ export const typeOption: Option[] = [
   { label: '转载', value: 2 },
   { label: '翻译', value: 3 },
 ];
+
+// 弹窗模式枚举
+export enum ModalStatuEnum {
+  EDIT = '编辑',
+  ADD = '新增',
+  DELETE = '删除',
+  BATCHEDELE = '批量删除',
+}
