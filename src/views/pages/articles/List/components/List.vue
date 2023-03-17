@@ -1,6 +1,11 @@
 <template>
   <div class="article-list-table">
     <BasicTable @register="registerTable" title=" ">
+      <template #form-formHeader>
+        <Tabs class="tabs" @change="changeTab" v-model:activeKey="activeKey">
+          <TabPane v-for="item in tabsMap" :key="item.status" :tab="item.label" />
+        </Tabs>
+      </template>
       <template #bodyCell="{ column, record }: { column: any, record: _listResp[0] }">
         <template v-if="column.key === 'articleCover'">
           <Image
@@ -11,7 +16,7 @@
 
         <template v-if="column.key === 'tagDTOs'">
           <template v-for="item in record['tagDTOs']" :key="item.id">
-            <Tag color="cyan">
+            <Tag color="cyan" class="tag">
               {{ item.tagName }}
             </Tag>
           </template>
@@ -19,11 +24,24 @@
 
         <template v-if="column.key === 'isTop'">
           <Switch
-            :loading="btnLoading.popupBtn && btnLoading.btnId === record.article_id"
+            :loading="btnLoading.isTop && btnLoading.btnId === record['id']"
             :checkedValue="1"
             :unCheckedValue="0"
             v-model:checked="record[column.key]"
-            @change="popupStatusChange(record)"
+            @change="topAndFeaturedChange(record, column.key)"
+          >
+            <template #checkedChildren><check-outlined /></template>
+            <template #unCheckedChildren><close-outlined /></template>
+          </Switch>
+        </template>
+
+        <template v-if="column.key === 'isFeatured'">
+          <Switch
+            :loading="btnLoading.isFeatured && btnLoading.btnId === record['id']"
+            :checkedValue="1"
+            :unCheckedValue="0"
+            v-model:checked="record[column.key]"
+            @change="topAndFeaturedChange(record, column.key)"
           >
             <template #checkedChildren><check-outlined /></template>
             <template #unCheckedChildren><close-outlined /></template>
@@ -36,7 +54,7 @@
             :style="{ 'font-size': '12px' }"
             type="primary"
             class="mr-2"
-            @click="openPopup(ModalStatuEnum.EDIT, record)"
+            @click="toEdit(record.id)"
             >{{ ModalStatuEnum.EDIT }}</AButton
           >
           <AButton
@@ -58,20 +76,37 @@
 </template>
 
 <script setup lang="ts">
-  import { Tag, Image, Switch } from 'ant-design-vue';
+  import { Tag, Image, Switch, Tabs, TabPane } from 'ant-design-vue';
   import { CheckOutlined, CloseOutlined } from '@ant-design/icons-vue';
   import { BasicTable, useTable } from '/@/components/Table';
-  import { listArticlesAdminUsingGet } from '/@/api/apis';
+
+  import {
+    listArticlesAdminUsingGet,
+    updateArticleTopAndFeaturedUsingPut,
+    updateArticleDeleteUsingPut,
+  } from '/@/api/apis';
   import { Time } from '/@/components/Time';
-  import { getBasicColumns, getFormConfig, getModalFormConfig, ModalStatuEnum } from '../config';
+  import { getBasicColumns, getFormConfig, ModalStatuEnum } from '../config';
   import type { listParams, listResp as _listResp } from '../types';
-  import { useModal } from '/@/components/Modal';
   import { deepMerge } from '/@/utils';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { ref, reactive } from 'vue';
+  import { useRouter } from 'vue-router';
+
+  const activeKey = ref();
+
+  const router = useRouter();
   const { createMessage } = useMessage();
 
-  const [registerTable] = useTable({
+  const tabsMap = [
+    { label: '全部', status: '099s' },
+    { label: '公开', status: '1' },
+    { label: '草稿箱', status: '2' },
+    { label: '私密', status: '3' },
+    { label: '回收站', status: '4' },
+  ];
+
+  const [registerTable, { reload }] = useTable({
     api: listArticlesAdminUsingGet,
     columns: getBasicColumns(),
     useSearchForm: true,
@@ -85,45 +120,60 @@
       position: ['bottomCenter'],
     },
   });
-  const [registerModal, { openModal, setModalProps }] = useModal();
-
-  // 修改分类（新增或编辑）
-  function openPopup(mode: ModalStatuEnum, row: _listResp[0] = {}) {
-    setModalProps({ title: `${mode}标签` });
-    openModal(true, row);
-  }
 
   // 删除按钮加载控制
   const btnLoading = reactive({
     btnId: -1, //获取具体的按钮ID，避免整列的按钮状态都改变，-1 为批量删除
     loading: false, //删除
-    popupBtn: false,
+    isTop: false,
+    isFeatured: false,
   });
 
   const selectedID = ref<number[]>([-1]);
+
   async function toDelete(id: _listResp[number]['id'] = -1) {
     btnLoading.btnId = id;
     btnLoading.loading = true;
-    const requestBody: number[] = id === -1 ? selectedID.value : [id];
+    const ids: number[] = id === -1 ? selectedID.value : [id];
     try {
-      await deleteTagUsingDelete({ requestBody });
+      await updateArticleDeleteUsingPut({ requestBody: { ids, isDelete: 1 } });
       createMessage.success('操作成功');
     } catch {}
     btnLoading.loading = false;
     reload();
   }
 
-  const popupStatusChange = async (value) => {
-    btnLoading.btnId = value.article_id;
-    btnLoading.popupBtn = true;
+  const toEdit = (id: number | undefined) => {
+    router.push({ path: '/articles/edit', query: { id } });
+  };
+
+  const topAndFeaturedChange = async (record: _listResp[0], method: 'isTop' | 'isFeatured') => {
+    const methodMap = { isTop: '置顶', isFeatured: '推荐' };
+    btnLoading.btnId = record.id ?? -1;
+    btnLoading[method] = true;
     try {
-      await announcementUpdate({ requestBody: value });
-      createMessage.success('弹窗状态修改成功');
+      await updateArticleTopAndFeaturedUsingPut({
+        requestBody: { id: record.id, isTop: record.isTop, isFeatured: record.isFeatured },
+      });
+      createMessage.success(`${methodMap[method]}状态修改成功`);
     } catch (error) {
-      value.is_popup = value.is_popup ? 0 : 1;
+      record[method] = record[method] ? 0 : 1;
     }
-    btnLoading.popupBtn = false;
+    btnLoading[method] = false;
+  };
+
+  const changeTab = (e) => {
+    console.log(e);
   };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  .tag:not(:last-child) {
+    margin-right: 5px; /* 将margin-right属性应用到除了最后一个元素以外的所有元素 */
+  }
+
+  .tabs {
+    flex-basis: 100%;
+    padding-left: 10px;
+  }
+</style>

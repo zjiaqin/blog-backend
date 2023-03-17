@@ -1,5 +1,6 @@
 import { FormProps } from '/@/components/Table';
 import { BasicColumn } from '/@/components/Table/src/types/table';
+import { listCategoriesAdminBySearchUsingGet, listTagsAdminBySearchUsingGet } from '/@/api/apis';
 
 // 表格基础配置
 export function getBasicColumns(): BasicColumn[] {
@@ -95,45 +96,38 @@ export function getFormConfig(): Partial<FormProps> {
         label: '',
         component: 'Select',
         componentProps: {
-          option: typeOption,
+          placeholder: '请选择文章类型',
+          options: typeOption,
         },
       },
       {
-        field: 'categoryName',
+        field: 'categoryId',
         label: '',
-        component: 'Select',
+        component: 'ApiSelect',
         componentProps: {
           placeholder: '请选择分类',
+          api: listCategoriesAdminBySearchUsingGet,
+          labelField: 'categoryName',
+          valueField: 'categoryId',
         },
       },
       {
-        field: 'tagDTOs',
+        field: 'tagId',
         label: '',
-        component: 'Select',
+        component: 'ApiSelect',
         componentProps: {
           placeholder: '请选择标签',
-          options: [
-            {
-              label: 'TRC20',
-              value: 'TRC20',
-            },
-            {
-              label: 'ERC20',
-              value: 'ERC20',
-            },
-            {
-              label: 'BEP20',
-              value: 'BEP20',
-            },
-          ],
+          api: listTagsAdminBySearchUsingGet,
+          labelField: 'tagName',
+          valueField: 'id',
         },
       },
       {
-        field: 'chain',
+        field: 'keywords',
         label: '',
         component: 'Input',
         componentProps: {
-          placeholder: '请输入文章名',
+          placeholder: '请输入关键词',
         },
       },
     ],

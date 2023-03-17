@@ -56,6 +56,7 @@ export function getFormConfig(): Partial<FormProps> {
             onChange: (value: string) => {
               model[field] = value;
             },
+            height: 650,
           });
         },
       },

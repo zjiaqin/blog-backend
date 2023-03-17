@@ -15,8 +15,20 @@
   import { getFormConfig, ModalStatuEnum } from '../config';
   import { FromSubmit } from '../components';
   import { useModal } from '/@/components/Modal';
+  import { onMounted, ref } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { getArticleBackByIdUsingGet } from '/@/api/apis';
+  import { deepMerge } from '/@/utils';
+  import type { ArticleByIdResp, ArticleByIdParams } from '../types';
 
-  const [register, { validate, getFieldsValue }] = useForm(getFormConfig());
+  const route = useRoute();
+
+  const model = ref<ModalStatuEnum>(ModalStatuEnum.ADD);
+  const loading = ref(false);
+
+  const formData = ref<ArticleByIdResp>();
+
+  const [register, { validate, getFieldsValue, setFieldsValue }] = useForm(getFormConfig());
 
   const [registerModal, { openModal, setModalProps }] = useModal();
 
@@ -25,9 +37,28 @@
     try {
       await validate();
       setModalProps({ title: ModalStatuEnum.ADD });
-      openModal(true, getFieldsValue());
+      openModal(true, deepMerge(formData.value, getFieldsValue()));
     } catch {}
   }
+
+  const initFont = async (articleId: ArticleByIdParams['articleId']) => {
+    if (!articleId) return;
+    // model.value = articleId ? ModalStatuEnum.EDIT : ModalStatuEnum.ADD;
+    model.value = ModalStatuEnum.EDIT;
+    loading.value = true;
+    try {
+      const res = await getArticleBackByIdUsingGet({ articleId });
+      loading.value = false;
+
+      formData.value = res;
+      setFieldsValue(res);
+    } catch (error) {}
+    loading.value = false;
+  };
+
+  onMounted(() => {
+    initFont(route.query.id as string);
+  });
 </script>
 
 <style lang="less" scoped></style>

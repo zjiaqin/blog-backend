@@ -1,7 +1,5 @@
 <template>
-  <div class="container">
-    <List />
-  </div>
+  <List />
 </template>
 
 <script setup lang="ts">
