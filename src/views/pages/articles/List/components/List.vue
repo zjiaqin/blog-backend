@@ -3,8 +3,39 @@
     <BasicTable @register="registerTable" title=" ">
       <template #form-formHeader>
         <Tabs class="tabs" @change="changeTab" v-model:activeKey="activeKey">
-          <TabPane v-for="item in tabsMap" :key="item.status" :tab="item.label" />
+          <TabPane v-for="item in tabsMap" :key="item.key" :tab="item.label" />
         </Tabs>
+      </template>
+      <template #tableTitle>
+        <div class="flex w-full">
+          <a-button
+            type="primary"
+            :disabled="!selectedID.length"
+            danger
+            class="mr-2"
+            @click="toDelete()"
+            >{{ ModalStatuEnum.BATCHEDELE }}</a-button
+          >
+          <a-button
+            :disabled="!selectedID.length"
+            type="primary"
+            class="mr-2"
+            @click="toExport()"
+            >{{ ModalStatuEnum.BATCHOUT }}</a-button
+          >
+          <BasicUpload
+            :emptyHidePreview="true"
+            :showOkBtn="false"
+            :showImg="false"
+            :accept="['md']"
+            :maxSize="2"
+            :maxNumber="10"
+            :api="toImport"
+            :buttonText="ModalStatuEnum.BATCHIN"
+            @reload="reload()"
+            class="ml-auto"
+          />
+        </div>
       </template>
       <template #bodyCell="{ column, record }: { column: any, record: _listResp[0] }">
         <template v-if="column.key === 'articleCover'">
@@ -84,6 +115,8 @@
     listArticlesAdminUsingGet,
     updateArticleTopAndFeaturedUsingPut,
     updateArticleDeleteUsingPut,
+    exportArticlesUsingPost,
+    importArticlesUsingPost,
   } from '/@/api/apis';
   import { Time } from '/@/components/Time';
   import { getBasicColumns, getFormConfig, ModalStatuEnum } from '../config';
@@ -92,6 +125,8 @@
   import { useMessage } from '/@/hooks/web/useMessage';
   import { ref, reactive } from 'vue';
   import { useRouter } from 'vue-router';
+  import { downloadByUrl } from '/@/utils/file/download';
+  import { BasicUpload } from '/@/components/Upload';
 
   const activeKey = ref();
 
@@ -99,22 +134,30 @@
   const { createMessage } = useMessage();
 
   const tabsMap = [
-    { label: '全部', status: '099s' },
-    { label: '公开', status: '1' },
-    { label: '草稿箱', status: '2' },
-    { label: '私密', status: '3' },
-    { label: '回收站', status: '4' },
+    { label: '全部', key: 0, param: {} },
+    { label: '公开', key: 1, param: { status: 1 } },
+    { label: '私密', key: 2, param: { status: 2 } },
+    { label: '草稿', key: 3, param: { status: 3 } },
+    { label: '回收站', key: 4, param: { isDelete: 1 } },
   ];
 
   const [registerTable, { reload }] = useTable({
     api: listArticlesAdminUsingGet,
+    rowKey: (record) => {
+      return record.id;
+    }, //指定每行的key,用于多选框获取待操作的ID
+    rowSelection: {
+      onChange: (selectedRowKeys: number[]) => {
+        selectedID.value = selectedRowKeys;
+      }, //配置多选框 ，将选择的 行的ID添加到 多选数组中
+    },
     columns: getBasicColumns(),
     useSearchForm: true,
     formConfig: getFormConfig(),
     showIndexColumn: false,
     beforeFetch: (param: listParams) => {
       const option: listParams = { isDelete: 0 };
-      return deepMerge(param, option);
+      return param.isDelete ? param : deepMerge(param, option);
     },
     pagination: {
       position: ['bottomCenter'],
@@ -129,7 +172,7 @@
     isFeatured: false,
   });
 
-  const selectedID = ref<number[]>([-1]);
+  const selectedID = ref<number[]>([]);
 
   async function toDelete(id: _listResp[number]['id'] = -1) {
     btnLoading.btnId = id;
@@ -162,8 +205,26 @@
     btnLoading[method] = false;
   };
 
-  const changeTab = (e) => {
-    console.log(e);
+  const changeTab = (e: number) => {
+    const res = tabsMap.find((obj) => obj.key === e);
+    reload({ filterInfo: res?.param });
+  };
+
+  const toExport = async () => {
+    try {
+      const res = await exportArticlesUsingPost({ requestBody: selectedID.value });
+      if (!res) return;
+      for (let url of res) {
+        console.log(downloadByUrl({ url, target: '_blank', fileName: undefined }));
+      }
+    } catch (error) {}
+  };
+
+  const toImport = async (...args) => {
+    const formData = new FormData();
+    formData.append('file', args[0]['file']);
+    await importArticlesUsingPost({ requestBody: formData as any });
+    return { data: { url: '566' } };
   };
 </script>
 

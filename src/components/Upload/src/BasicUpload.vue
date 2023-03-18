@@ -2,8 +2,9 @@
   <div>
     <Space>
       <a-button type="primary" @click="openUploadModal" preIcon="carbon:cloud-upload">
-        {{ t('component.upload.upload') }}
+        {{ $props.buttonText }}
       </a-button>
+
       <Tooltip placement="bottom" v-if="showPreview">
         <template #title>
           {{ t('component.upload.uploaded') }}
@@ -25,6 +26,7 @@
       @register="registerUploadModal"
       @change="handleChange"
       @delete="handleDelete"
+      @reload="reload"
     />
 
     <UploadPreviewModal
@@ -51,7 +53,7 @@
     name: 'BasicUpload',
     components: { UploadModal, Space, UploadPreviewModal, Icon, Tooltip },
     props: uploadContainerProps,
-    emits: ['change', 'delete', 'preview-delete', 'update:value'],
+    emits: ['change', 'delete', 'preview-delete', 'update:value', 'reload'],
 
     setup(props, { emit, attrs }) {
       const { t } = useI18n();
@@ -103,7 +105,9 @@
       function handlePreviewDelete(url: string) {
         emit('preview-delete', url);
       }
-
+      function reload() {
+        emit('reload');
+      }
       return {
         registerUploadModal,
         openUploadModal,
@@ -115,6 +119,7 @@
         showPreview,
         bindValue,
         handleDelete,
+        reload,
         handlePreviewDelete,
         t,
       };

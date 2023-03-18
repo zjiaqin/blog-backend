@@ -1,5 +1,7 @@
 import type { PropType } from 'vue';
 import { FileBasicColumn } from './typing';
+import { useI18n } from '/@/hooks/web/useI18n';
+const { t } = useI18n();
 
 export const basicProps = {
   helpText: {
@@ -42,6 +44,14 @@ export const basicProps = {
     type: String as PropType<string>,
     default: null,
   },
+  showImg: {
+    type: Boolean,
+    default: true,
+  },
+  showOkBtn: {
+    type: Boolean,
+    default: true,
+  },
 };
 
 export const uploadContainerProps = {
@@ -57,6 +67,10 @@ export const uploadContainerProps = {
   emptyHidePreview: {
     type: Boolean as PropType<boolean>,
     default: false,
+  },
+  buttonText: {
+    type: String as PropType<string>,
+    default: t('component.upload.uploaded'),
   },
 };
 
@@ -79,5 +93,9 @@ export const fileListProps = {
   dataSource: {
     type: Array as PropType<any[]>,
     default: null,
+  },
+  showImg: {
+    type: Boolean,
+    default: true,
   },
 };

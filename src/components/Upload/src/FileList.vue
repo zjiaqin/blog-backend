@@ -18,8 +18,11 @@
         },
       );
       return () => {
-        const { columns, actionColumn, dataSource } = props;
-        const columnList = [...columns, actionColumn];
+        const { columns, actionColumn, dataSource, showImg } = props;
+        let columnList = [...columns, actionColumn];
+        if (!showImg) {
+          columnList = columnList.filter((obj) => obj.dataIndex !== 'thumbUrl');
+        }
         return (
           <table class="file-table">
             <colgroup>

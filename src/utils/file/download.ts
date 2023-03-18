@@ -73,6 +73,7 @@ export function downloadByUrl({
   }
   if (isChrome || isSafari) {
     const link = document.createElement('a');
+    link.style.display = 'none';
     link.href = url;
     link.target = target;
 
@@ -80,17 +81,20 @@ export function downloadByUrl({
       link.download = fileName || url.substring(url.lastIndexOf('/') + 1, url.length);
     }
 
-    if (document.createEvent) {
-      const e = document.createEvent('MouseEvents');
-      e.initEvent('click', true, true);
-      link.dispatchEvent(e);
-      return true;
-    }
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    // const e = document.createEvent('MouseEvents');
+    // e.initEvent('click', true, true);
+    // link.dispatchEvent(e);
+
+    return true;
   }
   if (url.indexOf('?') === -1) {
     url += '?download';
   }
 
   openWindow(url, { target });
+
   return true;
 }

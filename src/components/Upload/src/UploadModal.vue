@@ -6,6 +6,7 @@
     v-bind="$attrs"
     @register="register"
     @ok="handleOk"
+    :showOkBtn="$props.showOkBtn"
     :closeFunc="handleCloseFunc"
     :maskClosable="false"
     :keyboard="false"
@@ -39,7 +40,12 @@
         </a-button>
       </Upload>
     </div>
-    <FileList :dataSource="fileListRef" :columns="columns" :actionColumn="actionColumn" />
+    <FileList
+      :dataSource="fileListRef"
+      :columns="columns"
+      :actionColumn="actionColumn"
+      :showImg="$props.showImg"
+    />
   </BasicModal>
 </template>
 <script lang="ts">
@@ -66,17 +72,17 @@
     components: { BasicModal, Upload, Alert, FileList },
     props: {
       ...basicProps,
+
       previewFileList: {
         type: Array as PropType<string[]>,
         default: () => [],
       },
     },
-    emits: ['change', 'register', 'delete'],
+    emits: ['change', 'register', 'delete', 'reload'],
     setup(props, { emit }) {
       const state = reactive<{ fileList: FileItem[] }>({
         fileList: [],
       });
-
       //   是否正在上传
       const isUploadingRef = ref(false);
       const fileListRef = ref<FileItem[]>([]);
@@ -124,10 +130,16 @@
       // 上传前校验
       function beforeUpload(file: File) {
         const { size, name } = file;
-        const { maxSize } = props;
+        const { maxSize, accept } = props;
         // 设置最大值，则判断
         if (maxSize && file.size / 1024 / 1024 >= maxSize) {
           createMessage.error(t('component.upload.maxSizeMultiple', [maxSize]));
+          return false;
+        }
+        // 设置类型判断
+
+        if (accept && !accept.includes(name.split('.').pop() ?? '')) {
+          createMessage.error('上传文件类型错误');
           return false;
         }
 
@@ -266,7 +278,10 @@
       // 点击关闭：则所有操作不保存，包括上传的
       async function handleCloseFunc() {
         if (!isUploadingRef.value) {
+          console.log(fileListRef.value);
           fileListRef.value = [];
+
+          emit('reload');
           return true;
         } else {
           createMessage.warning(t('component.upload.uploadWait'));

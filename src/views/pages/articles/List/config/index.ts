@@ -151,4 +151,6 @@ export enum ModalStatuEnum {
   ADD = '新增',
   DELETE = '删除',
   BATCHEDELE = '批量删除',
+  BATCHOUT = '批量导出',
+  BATCHIN = '批量导入',
 }
