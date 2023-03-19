@@ -1,8 +1,8 @@
 <template>
-  <CollapseContainer :title="ModalStatuEnum.ADD" :canExpan="false">
+  <CollapseContainer :title="model" :canExpan="false">
     <BasicForm @register="register">
       <template #customSlot>
-        <AButton type="primary" @click="openPopup">{{ ModalStatuEnum.ADD }}</AButton>
+        <AButton type="primary" @click="openPopup">{{ model }}</AButton>
       </template>
     </BasicForm>
     <FromSubmit @register="registerModal" />
@@ -36,7 +36,7 @@
   async function openPopup() {
     try {
       await validate();
-      setModalProps({ title: ModalStatuEnum.ADD });
+      setModalProps({ title: model.value });
       openModal(true, deepMerge(formData.value, getFieldsValue()));
     } catch {}
   }
