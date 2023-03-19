@@ -89,7 +89,7 @@
     loading: false, //删除
   });
 
-  const selectedID = ref<number[]>([-1]);
+  const selectedID = ref<number[]>([]);
   async function toDelete(id: _listResp[number]['id'] = -1) {
     btnLoading.btnId = id;
     btnLoading.loading = true;
