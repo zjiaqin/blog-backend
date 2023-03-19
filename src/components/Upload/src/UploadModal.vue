@@ -242,7 +242,6 @@
             }),
           );
           isUploadingRef.value = false;
-          console.log(fileListRef.value);
 
           // 生产环境:抛出错误
           const errorList = data.filter((item: any) => !item.success);

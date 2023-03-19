@@ -108,7 +108,7 @@ export function getFormConfig(): Partial<FormProps> {
           placeholder: '请选择分类',
           api: listCategoriesAdminBySearchUsingGet,
           labelField: 'categoryName',
-          valueField: 'categoryId',
+          valueField: 'id',
         },
       },
       {

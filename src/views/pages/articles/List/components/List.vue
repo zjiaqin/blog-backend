@@ -8,21 +8,17 @@
       </template>
       <template #tableTitle>
         <div class="flex w-full">
-          <a-button
+          <AButton
             type="primary"
             :disabled="!selectedID.length"
             danger
             class="mr-2"
             @click="toDelete()"
-            >{{ ModalStatuEnum.BATCHEDELE }}</a-button
+            >{{ ModalStatuEnum.BATCHEDELE }}</AButton
           >
-          <a-button
-            :disabled="!selectedID.length"
-            type="primary"
-            class="mr-2"
-            @click="toExport()"
-            >{{ ModalStatuEnum.BATCHOUT }}</a-button
-          >
+          <AButton :disabled="!selectedID.length" type="primary" class="mr-2" @click="toExport()">{{
+            ModalStatuEnum.BATCHOUT
+          }}</AButton>
           <BasicUpload
             :emptyHidePreview="true"
             :showOkBtn="false"
@@ -134,10 +130,10 @@
   const { createMessage } = useMessage();
 
   const tabsMap = [
-    { label: '全部', key: 0, param: {} },
-    { label: '公开', key: 1, param: { status: 1 } },
-    { label: '私密', key: 2, param: { status: 2 } },
-    { label: '草稿', key: 3, param: { status: 3 } },
+    { label: '全部', key: 0, param: { isDelete: 0 } },
+    { label: '公开', key: 1, param: { isDelete: 0, status: 1 } },
+    { label: '私密', key: 2, param: { isDelete: 0, status: 2 } },
+    { label: '草稿', key: 3, param: { isDelete: 0, status: 3 } },
     { label: '回收站', key: 4, param: { isDelete: 1 } },
   ];
 
@@ -156,7 +152,8 @@
     formConfig: getFormConfig(),
     showIndexColumn: false,
     beforeFetch: (param: listParams) => {
-      const option: listParams = { isDelete: 0 };
+      // const option: listParams = { isDelete: 0 };
+      const option = tabsMap.find((obj) => obj.key === activeKey.value)?.param;
       return param.isDelete ? param : deepMerge(param, option);
     },
     pagination: {
@@ -205,9 +202,8 @@
     btnLoading[method] = false;
   };
 
-  const changeTab = (e: number) => {
-    const res = tabsMap.find((obj) => obj.key === e);
-    reload({ filterInfo: res?.param });
+  const changeTab = () => {
+    reload();
   };
 
   const toExport = async () => {
