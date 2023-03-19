@@ -124,7 +124,7 @@
   import { downloadByUrl } from '/@/utils/file/download';
   import { BasicUpload } from '/@/components/Upload';
 
-  const activeKey = ref();
+  const activeKey = ref(0);
 
   const router = useRouter();
   const { createMessage } = useMessage();
