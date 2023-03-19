@@ -172,6 +172,9 @@
 
       // 删除
       function handleRemove(record: FileItem) {
+        if (record.status === UploadResultStatus.SUCCESS) {
+          return createMessage.info('已成功上传，需在文章列表内进行操作');
+        }
         const index = fileListRef.value.findIndex((item) => item.uuid === record.uuid);
         index !== -1 && fileListRef.value.splice(index, 1);
         emit('delete', record);
@@ -239,6 +242,8 @@
             }),
           );
           isUploadingRef.value = false;
+          console.log(fileListRef.value);
+
           // 生产环境:抛出错误
           const errorList = data.filter((item: any) => !item.success);
           if (errorList.length > 0) throw errorList;
@@ -278,10 +283,16 @@
       // 点击关闭：则所有操作不保存，包括上传的
       async function handleCloseFunc() {
         if (!isUploadingRef.value) {
-          console.log(fileListRef.value);
+          if (
+            fileListRef.value.findIndex((item) => {
+              return item.status === UploadResultStatus.SUCCESS;
+            }) !== -1
+          ) {
+            emit('reload');
+          }
+
           fileListRef.value = [];
 
-          emit('reload');
           return true;
         } else {
           createMessage.warning(t('component.upload.uploadWait'));

@@ -78,18 +78,24 @@ export function createTableColumns(): BasicColumn[] {
     },
   ];
 }
+
+function isSuccess(record) {
+  return record.status === UploadResultStatus.SUCCESS;
+}
 export function createActionColumn(handleRemove: Function): BasicColumn {
   return {
     width: 120,
     title: t('component.upload.operating'),
     dataIndex: 'action',
     fixed: false,
+
     customRender: ({ record }) => {
       const actions: ActionItem[] = [
         {
           label: t('component.upload.del'),
           color: 'error',
           onClick: handleRemove.bind(null, record),
+          disabled: isSuccess(record),
         },
       ];
       // if (checkImgType(record)) {
