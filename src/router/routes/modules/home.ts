@@ -92,10 +92,11 @@ const home: AppRouteModule[] = [
     name: 'Message',
     component: LAYOUT,
     redirect: '/message/index',
+
     meta: {
       orderNo: 3,
       icon: 'ion:notifications',
-      title: '消息管理',
+      title: '评论管理',
     },
     children: [
       {
@@ -103,9 +104,8 @@ const home: AppRouteModule[] = [
         name: 'MessageIndex',
         component: () => import('/@/views/pages/message/index.vue'),
         meta: {
-          icon: 'ion:notifications',
-          title: '消息管理',
-          hideBreadcrumb: true,
+          icon: 'ion:chatbubble-working',
+          title: '评论管理',
         },
       },
     ],
