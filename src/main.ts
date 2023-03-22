@@ -15,6 +15,7 @@ import { setupGlobDirectives } from '/@/directives';
 import { setupI18n } from '/@/locales/setupI18n';
 import { registerGlobComp } from '/@/components/registerGlobComp';
 import { isDevMode } from './utils/env';
+import { VueQueryPlugin } from '@tanstack/vue-query';
 
 if (isDevMode()) {
   import('ant-design-vue/es/style');
@@ -60,7 +61,7 @@ async function bootstrap() {
   // https://next.router.vuejs.org/api/#isready
   // await router.isReady();
 
-  app.mount('#app');
+  app.use(VueQueryPlugin).mount('#app');
 }
 
 bootstrap();
