@@ -88,13 +88,56 @@ const home: AppRouteModule[] = [
     ],
   },
   {
+    path: '/talks',
+    name: 'Talks',
+    component: LAYOUT,
+    redirect: '/talks/list',
+    meta: {
+      orderNo: 3,
+      icon: 'ion:logo-octocat',
+      title: '说说管理',
+    },
+
+    children: [
+      {
+        path: 'list',
+        name: 'TalksList',
+        component: () => import('/@/views/pages/talks/List/index.vue'),
+        meta: {
+          icon: 'ion:document-text',
+          title: '说说列表',
+        },
+      },
+      {
+        path: 'add',
+        name: 'TalksAdd',
+        component: () => import('/@/views/pages/talks/Editor/index.vue'),
+        meta: {
+          icon: 'ion:create',
+          title: '发布说说',
+        },
+      },
+      {
+        path: 'edit',
+        name: 'TalksEdit',
+        component: () => import('/@/views/pages/talks/Editor/index.vue'),
+        meta: {
+          icon: 'ion:create',
+          title: '编辑说说',
+          hideMenu: true,
+        },
+      },
+    ],
+  },
+
+  {
     path: '/message',
     name: 'Message',
     component: LAYOUT,
     redirect: '/message/index',
 
     meta: {
-      orderNo: 3,
+      orderNo: 4,
       icon: 'ion:notifications',
       title: '评论管理',
     },

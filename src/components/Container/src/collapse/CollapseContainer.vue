@@ -1,6 +1,12 @@
 <template>
   <div :class="prefixCls">
-    <CollapseHeader v-bind="props" :prefixCls="prefixCls" :show="show" @expand="handleExpand">
+    <CollapseHeader
+      v-if="showHeader"
+      v-bind="props"
+      :prefixCls="prefixCls"
+      :show="show"
+      @expand="handleExpand"
+    >
       <template #title>
         <slot name="title"></slot>
       </template>
@@ -38,6 +44,7 @@
   const props = defineProps({
     title: { type: String, default: '' },
     loading: { type: Boolean },
+    showHeader: { type: Boolean, defaule: true },
     /**
      *  Can it be expanded
      */
