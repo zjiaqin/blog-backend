@@ -9,16 +9,17 @@ export function getBasicColumns(): BasicColumn[] {
     {
       title: '文章封面',
       dataIndex: 'articleCover',
-      width: 160,
+      width: 140,
     },
     {
       title: '标题',
       dataIndex: 'articleTitle',
+      width: 200,
     },
     {
       title: '分类',
       dataIndex: 'categoryName',
-      width: 220,
+      width: 140,
     },
     {
       title: '标签',
@@ -36,7 +37,7 @@ export function getBasicColumns(): BasicColumn[] {
     {
       title: '类型',
       dataIndex: 'type',
-      width: 160,
+      width: 140,
       format: (T: any) => {
         const { label } = typeOption.find((value) => value.value === T) ?? { label: '其它' };
         return label;
@@ -45,7 +46,7 @@ export function getBasicColumns(): BasicColumn[] {
     {
       title: '发表时间',
       dataIndex: 'createTime',
-      width: 160,
+      width: 180,
     },
     {
       title: '置顶',

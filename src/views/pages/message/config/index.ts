@@ -1,7 +1,5 @@
 import { FormProps } from '/@/components/Table';
 import { BasicColumn } from '/@/components/Table/src/types/table';
-import { listCategoriesAdminBySearchUsingGet, listTagsAdminBySearchUsingGet } from '/@/api/apis';
-
 // 表格基础配置
 export function getBasicColumns(): BasicColumn[] {
   return [
@@ -9,16 +7,17 @@ export function getBasicColumns(): BasicColumn[] {
     {
       title: '头像',
       dataIndex: 'avatar',
-      width: 160,
+      width: 110,
     },
     {
       title: '评论人',
       dataIndex: 'nickname',
+      width: 140,
     },
     {
       title: '回复人',
       dataIndex: 'replyNickname',
-      width: 220,
+      width: 140,
       format: (value) => {
         return value ?? '无';
       },
@@ -26,22 +25,22 @@ export function getBasicColumns(): BasicColumn[] {
     {
       title: '评论内容',
       dataIndex: 'commentContent',
-      width: 140,
+      width: 240,
     },
     {
       title: '评论时间',
       dataIndex: 'createTime',
-      width: 160,
+      width: 140,
     },
     {
       title: '状态',
       dataIndex: 'isReview',
-      width: 160,
+      width: 140,
     },
     {
       title: '来源',
       dataIndex: 'type',
-      width: 160,
+      width: 140,
       format: (T: any) => {
         const { label } = typeOption.find((obj) => obj.value === T) ?? { label: '其它' };
         return label;
@@ -50,7 +49,7 @@ export function getBasicColumns(): BasicColumn[] {
     {
       title: '操作',
       dataIndex: 'operate',
-      width: 160,
+      width: 140,
     },
   ];
 }
