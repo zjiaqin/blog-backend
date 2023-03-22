@@ -91,33 +91,11 @@ export function getFormConfig(): Partial<FormProps> {
         },
       },
       {
-        field: 'categoryId',
-        label: '',
-        component: 'ApiSelect',
-        componentProps: {
-          placeholder: '请选择分类',
-          api: listCategoriesAdminBySearchUsingGet,
-          labelField: 'categoryName',
-          valueField: 'id',
-        },
-      },
-      {
-        field: 'tagId',
-        label: '',
-        component: 'ApiSelect',
-        componentProps: {
-          placeholder: '请选择标签',
-          api: listTagsAdminBySearchUsingGet,
-          labelField: 'tagName',
-          valueField: 'id',
-        },
-      },
-      {
         field: 'keywords',
         label: '',
         component: 'Input',
         componentProps: {
-          placeholder: '请输入关键词',
+          placeholder: '请输入评论人名称',
         },
       },
     ],
@@ -142,10 +120,8 @@ export const statusMap = ['审核中', '正常'];
 
 // 弹窗模式枚举
 export enum ModalStatuEnum {
-  EDIT = '编辑',
   ADD = '新增',
   DELETE = '删除',
   BATCHEDELE = '批量删除',
-  BATCHOUT = '批量导出',
-  BATCHIN = '批量导入',
+  BATCHPASS = '批量通过',
 }

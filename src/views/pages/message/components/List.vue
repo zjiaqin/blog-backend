@@ -11,26 +11,20 @@
           <AButton
             type="primary"
             :disabled="!selectedID.length"
+            :loading="btnLoading.btnId === -1 && btnLoading.loading"
             danger
             class="mr-2"
             @click="toDelete()"
             >{{ ModalStatuEnum.BATCHEDELE }}</AButton
           >
-          <AButton :disabled="!selectedID.length" type="primary" class="mr-2" @click="toExport()">{{
-            ModalStatuEnum.BATCHOUT
-          }}</AButton>
-          <BasicUpload
-            :emptyHidePreview="true"
-            :showOkBtn="false"
-            :showImg="false"
-            :accept="['md']"
-            :maxSize="2"
-            :maxNumber="10"
-            :api="toImport"
-            :buttonText="ModalStatuEnum.BATCHIN"
-            @reload="reload()"
-            class="ml-auto"
-          />
+          <AButton
+            :disabled="!selectedID.length"
+            type="primary"
+            :loading="btnLoading.btnId === -2 && btnLoading.loading"
+            class="mr-2"
+            @click="toPass()"
+            >{{ ModalStatuEnum.BATCHPASS }}</AButton
+          >
         </div>
       </template>
       <template #bodyCell="{ column, record }: { column: any, record: _listResp[0] }">
@@ -78,10 +72,8 @@
 
   import {
     listCommentBackDtoUsingGet,
-    updateArticleTopAndFeaturedUsingPut,
-    updateArticleDeleteUsingPut,
-    exportArticlesUsingPost,
-    importArticlesUsingPost,
+    deleteCommentsUsingDelete,
+    updateCommentsReviewUsingPut,
   } from '/@/api/apis';
   import { Time } from '/@/components/Time';
   import { typeOption, statusMap, getBasicColumns, getFormConfig, ModalStatuEnum } from '../config';
@@ -89,21 +81,15 @@
   import { deepMerge } from '/@/utils';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { ref, reactive } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { downloadByUrl } from '/@/utils/file/download';
-  import { BasicUpload } from '/@/components/Upload';
 
   const activeKey = ref(0);
 
-  const router = useRouter();
   const { createMessage } = useMessage();
 
   const tabsMap = [
-    { label: '全部', key: 0, param: { isDelete: 0 } },
-    { label: '公开', key: 1, param: { isDelete: 0, status: 1 } },
-    { label: '私密', key: 2, param: { isDelete: 0, status: 2 } },
-    { label: '草稿', key: 3, param: { isDelete: 0, status: 3 } },
-    { label: '回收站', key: 4, param: { isDelete: 1 } },
+    { label: '全部', key: 0 },
+    { label: '正常', key: 1, param: { isReview: 1 } },
+    { label: '审核中', key: 2, param: { isReview: 0 } },
   ];
 
   const [registerTable, { reload }] = useTable({
@@ -121,7 +107,6 @@
     formConfig: getFormConfig(),
     showIndexColumn: false,
     beforeFetch: (param: listParams) => {
-      // const option: listParams = { isDelete: 0 };
       const option = tabsMap.find((obj) => obj.key === activeKey.value)?.param;
       return param.isDelete ? param : deepMerge(param, option);
     },
@@ -132,10 +117,8 @@
 
   // 删除按钮加载控制
   const btnLoading = reactive({
-    btnId: -1, //获取具体的按钮ID，避免整列的按钮状态都改变，-1 为批量删除
+    btnId: -99, //获取具体的按钮ID，避免整列的按钮状态都改变，-1 为批量删除 -2为批量审批
     loading: false, //删除
-    isTop: false,
-    isFeatured: false,
   });
 
   const selectedID = ref<number[]>([]);
@@ -145,51 +128,29 @@
     btnLoading.loading = true;
     const ids: number[] = id === -1 ? selectedID.value : [id];
     try {
-      await updateArticleDeleteUsingPut({ requestBody: { ids, isDelete: 1 } });
+      await deleteCommentsUsingDelete({ requestBody: ids });
       createMessage.success('操作成功');
     } catch {}
     btnLoading.loading = false;
     reload();
   }
 
-  const toEdit = (id: number | undefined) => {
-    router.push({ path: '/articles/edit', query: { id } });
-  };
+  const toPass = async (id: _listResp[number]['id'] = -2) => {
+    console.log(999);
 
-  const topAndFeaturedChange = async (record: _listResp[0], method: 'isTop' | 'isFeatured') => {
-    const methodMap = { isTop: '置顶', isFeatured: '推荐' };
-    btnLoading.btnId = record.id ?? -1;
-    btnLoading[method] = true;
+    btnLoading.btnId = id;
+    btnLoading.loading = true;
+    const ids: number[] = id === -2 ? selectedID.value : [id];
     try {
-      await updateArticleTopAndFeaturedUsingPut({
-        requestBody: { id: record.id, isTop: record.isTop, isFeatured: record.isFeatured },
-      });
-      createMessage.success(`${methodMap[method]}状态修改成功`);
-    } catch (error) {
-      record[method] = record[method] ? 0 : 1;
-    }
-    btnLoading[method] = false;
+      await updateCommentsReviewUsingPut({ requestBody: { ids, isReview: 1 } });
+      createMessage.success('操作成功');
+    } catch {}
+    btnLoading.loading = false;
+    reload();
   };
 
   const changeTab = () => {
     reload();
-  };
-
-  const toExport = async () => {
-    try {
-      const res = await exportArticlesUsingPost({ requestBody: selectedID.value });
-      if (!res) return;
-      for (let url of res) {
-        console.log(downloadByUrl({ url, target: '_blank', fileName: undefined }));
-      }
-    } catch (error) {}
-  };
-
-  const toImport = async (...args) => {
-    const formData = new FormData();
-    formData.append('file', args[0]['file']);
-    await importArticlesUsingPost({ requestBody: formData as any });
-    return { data: { url: '566' } };
   };
 </script>
 
