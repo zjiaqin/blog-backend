@@ -1,7 +1,5 @@
 import type { ApiData, ApiParam } from '/#/axios';
-import { listArticlesAdminUsingGet } from '/@/api/apis';
+import { listBackTalksUsingGet } from '/@/api/apis';
 
-export type listParams = ApiParam<typeof listArticlesAdminUsingGet>;
-export type listResp = NonNullable<
-  NonNullable<ApiData<typeof listArticlesAdminUsingGet>>['records']
->;
+export type listParams = ApiParam<typeof listBackTalksUsingGet>;
+export type listResp = NonNullable<NonNullable<ApiData<typeof listBackTalksUsingGet>>['records']>;

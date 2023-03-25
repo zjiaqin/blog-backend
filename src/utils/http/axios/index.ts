@@ -292,10 +292,13 @@ export const defHttp = createAxios();
 // });
 
 export const createRequest = <TReq, TResp extends Result<any>>(
-  _: string,
+  name: string,
   requestConfigCreator: (args: TReq) => AxiosRequestConfig,
 ) => {
-  return (args: TReq, options?: RequestOptions) => {
+  const request = function (args: TReq, options?: RequestOptions) {
     return defHttp.request<TResp['data']>(requestConfigCreator(args), options);
   };
+  request.id = name;
+
+  return request;
 };
