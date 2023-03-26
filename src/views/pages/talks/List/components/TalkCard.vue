@@ -23,8 +23,18 @@
           <ellipsis-outlined :style="{ fontSize: '16px', padding: '5px' }" class="action" />
           <template #overlay>
             <Menu>
-              <MenuItem key="user-info" text="编辑" icon="ant-design:edit-twotone" />
-              <MenuItem key="logout" text="删除" icon="ant-design:delete-twotone" />
+              <MenuItem
+                key="user-info"
+                text="编辑"
+                icon="ant-design:edit-twotone"
+                @click="toEdit"
+              />
+              <MenuItem
+                key="logout"
+                text="删除"
+                icon="ant-design:delete-twotone"
+                @click="toDelete(props.listResp.id)"
+              />
             </Menu>
           </template>
         </Dropdown>
@@ -46,12 +56,34 @@
 </template>
 
 <script setup lang="ts">
+  import { useMutation } from '@tanstack/vue-query';
   import { EllipsisOutlined } from '@ant-design/icons-vue';
   import { MenuItem } from '../components';
+  import { useMessage } from '/@/hooks/web/useMessage';
   import { Card, CardMeta, Avatar, Menu, Dropdown, Image } from 'ant-design-vue';
   import { Time } from '/@/components/Time';
   import type { listResp } from '../types';
+  import { deleteTalksUsingDelete } from '/@/api/apis';
+
+  const emits = defineEmits<{ (e: 'reload'): void }>();
+
   const props = defineProps<{ listResp: listResp[0] }>();
+
+  const { createMessage } = useMessage();
+
+  const { mutate } = useMutation({
+    mutationFn: (id: number) => deleteTalksUsingDelete({ requestBody: [id] }),
+    onSuccess: async () => {
+      createMessage.success('操作成功');
+      emits('reload');
+    },
+  });
+
+  const toDelete = async (id = -1) => {
+    mutate(id);
+  };
+
+  const toEdit = () => {};
 </script>
 
 <style lang="less" scoped>
