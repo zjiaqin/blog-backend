@@ -1,5 +1,5 @@
 import type { ApiData, ApiParam } from '/#/axios';
-import { getArticleBackByIdUsingGet } from '/@/api/apis';
+import { getBackTalkByIdUsingGet } from '/@/api/apis';
 
-export type ArticleByIdParams = ApiParam<typeof getArticleBackByIdUsingGet>;
-export type ArticleByIdResp = NonNullable<NonNullable<ApiData<typeof getArticleBackByIdUsingGet>>>;
+export type TalkByIdParams = ApiParam<typeof getBackTalkByIdUsingGet>;
+export type TalkByIdResp = NonNullable<NonNullable<ApiData<typeof getBackTalkByIdUsingGet>>>;

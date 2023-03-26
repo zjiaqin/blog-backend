@@ -1,11 +1,7 @@
 <template>
-  <CollapseContainer :title="model" :canExpan="false">
-    <BasicForm @register="register">
-      <template #customSlot>
-        <AButton type="primary" @click="openPopup">{{ model }}</AButton>
-      </template>
-    </BasicForm>
-    <FromSubmit @register="registerModal" />
+  <CollapseContainer :title="model" :showHeader="true" :canExpan="false">
+    <BasicForm @register="register" @submit="handleSubmit" />
+    <AButton @click="test">test</AButton>
   </CollapseContainer>
 </template>
 
@@ -13,41 +9,30 @@
   import { CollapseContainer } from '/@/components/Container/index';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { getFormConfig, ModalStatuEnum } from '../config';
-  import { FromSubmit } from '../components';
-  import { useModal } from '/@/components/Modal';
+  import { useMessage } from '/@/hooks/web/useMessage';
+
   import { onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
-  import { getArticleBackByIdUsingGet } from '/@/api/apis';
-  import { deepMerge } from '/@/utils';
-  import type { ArticleByIdResp, ArticleByIdParams } from '../types';
+  import { getBackTalkByIdUsingGet, saveOrUpdateTalkUsingPost } from '/@/api/apis';
+  import type { TalkByIdResp, TalkByIdParams } from '../types';
 
+  const { createMessage } = useMessage();
   const route = useRoute();
 
   const model = ref<ModalStatuEnum>(ModalStatuEnum.ADD);
   const loading = ref(false);
 
-  const formData = ref<ArticleByIdResp>();
+  const formData = ref<TalkByIdResp>();
 
   const [register, { validate, getFieldsValue, setFieldsValue }] = useForm(getFormConfig());
 
-  const [registerModal, { openModal, setModalProps }] = useModal();
-
-  // 修改分类（新增或编辑）
-  async function openPopup() {
-    try {
-      await validate();
-      setModalProps({ title: model.value });
-      openModal(true, deepMerge(formData.value, getFieldsValue()));
-    } catch {}
-  }
-
-  const initFont = async (articleId: ArticleByIdParams['articleId']) => {
-    if (!articleId) return;
+  const initFont = async (talkId: TalkByIdParams['talkId']) => {
+    if (!talkId) return;
     // model.value = articleId ? ModalStatuEnum.EDIT : ModalStatuEnum.ADD;
     model.value = ModalStatuEnum.EDIT;
     loading.value = true;
     try {
-      const res = await getArticleBackByIdUsingGet({ articleId });
+      const res = await getBackTalkByIdUsingGet({ talkId });
       loading.value = false;
 
       formData.value = res;
@@ -55,6 +40,18 @@
     } catch (error) {}
     loading.value = false;
   };
+
+  const test = () => {
+    console.log(getFieldsValue());
+  };
+
+  async function handleSubmit(value) {
+    try {
+      await validate();
+      await saveOrUpdateTalkUsingPost({ requestBody: value });
+      createMessage.success('文章发布成功');
+    } catch (error) {}
+  }
 
   onMounted(() => {
     initFont(route.query.id as string);

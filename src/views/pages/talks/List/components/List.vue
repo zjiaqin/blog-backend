@@ -9,7 +9,7 @@
           <Empty />
         </template>
         <template v-for="item in page.records" :key="item.id">
-          <TalkCard :listResp="item" />
+          <TalkCard :listResp="item" @reload="refetch" />
         </template>
       </template>
       <div class="loading">
@@ -34,7 +34,7 @@
 
   import { ref } from 'vue';
 
-  const size = ref(5);
+  const size = ref(6);
   const activeKey = ref(0);
   const tabsMap = [
     { label: '全部', key: 0, param: {} },
@@ -58,7 +58,7 @@
     return page;
   }
 
-  const { isFetchingNextPage, isFetching, data, fetchNextPage } = useInfiniteQuery({
+  const { isFetchingNextPage, isFetching, data, fetchNextPage, refetch } = useInfiniteQuery({
     queryKey: [listBackTalksUsingGet.id, { size, activeKey }],
     queryFn: getlistBackTalks,
     getNextPageParam: (lastPage, pages) => {

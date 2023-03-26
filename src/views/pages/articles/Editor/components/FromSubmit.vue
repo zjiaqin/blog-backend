@@ -38,8 +38,6 @@
 
   async function handleSubmit(value) {
     try {
-      console.log(96999);
-
       await validate();
       await saveOrUpdateArticleUsingPost({ requestBody: value });
       createMessage.success('文章发布成功');

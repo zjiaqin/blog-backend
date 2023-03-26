@@ -27,7 +27,7 @@
                 key="user-info"
                 text="编辑"
                 icon="ant-design:edit-twotone"
-                @click="toEdit"
+                @click="toEdit(props.listResp.id)"
               />
               <MenuItem
                 key="logout"
@@ -64,6 +64,9 @@
   import { Time } from '/@/components/Time';
   import type { listResp } from '../types';
   import { deleteTalksUsingDelete } from '/@/api/apis';
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
 
   const emits = defineEmits<{ (e: 'reload'): void }>();
 
@@ -83,7 +86,9 @@
     mutate(id);
   };
 
-  const toEdit = () => {};
+  const toEdit = (id: number | undefined) => {
+    id && router.push({ path: '/talks/edit', query: { id } });
+  };
 </script>
 
 <style lang="less" scoped>
