@@ -1,7 +1,6 @@
 <template>
   <CollapseContainer :title="model" :showHeader="true" :canExpan="false">
     <BasicForm @register="register" @submit="handleSubmit" />
-    <AButton @click="test">test</AButton>
   </CollapseContainer>
 </template>
 
@@ -24,7 +23,7 @@
 
   const formData = ref<TalkByIdResp>();
 
-  const [register, { validate, getFieldsValue, setFieldsValue }] = useForm(getFormConfig());
+  const [register, { validate, setFieldsValue }] = useForm(getFormConfig());
 
   const initFont = async (talkId: TalkByIdParams['talkId']) => {
     if (!talkId) return;
@@ -39,10 +38,6 @@
       setFieldsValue(res);
     } catch (error) {}
     loading.value = false;
-  };
-
-  const test = () => {
-    console.log(getFieldsValue());
   };
 
   async function handleSubmit(value) {

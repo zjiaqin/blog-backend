@@ -46,7 +46,6 @@ export function getFormConfig(): Partial<FormProps> {
             },
           });
         },
-        required: true,
       },
       {
         field: `isTop`,

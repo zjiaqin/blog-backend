@@ -43,12 +43,9 @@
       <div class="pl-10">
         <div class="mb-2"> {{ props.listResp.content }}</div>
         <template v-if="props.listResp.imgs">
-          <Image
-            v-for="(item, index) in props.listResp.imgs"
-            :key="index"
-            :width="200"
-            :src="item"
-          />
+          <div class="img" v-for="(item, index) in props.listResp.imgs" :key="index">
+            <Image width="100%" height="100%" :src="item" />
+          </div>
         </template>
       </div>
     </Card>
@@ -114,6 +111,16 @@
     &:hover {
       color: @primary-color;
       transform: scale(1.2);
+    }
+  }
+
+  .img {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+
+    :deep(.ant-image-img) {
+      object-fit: contain;
     }
   }
 

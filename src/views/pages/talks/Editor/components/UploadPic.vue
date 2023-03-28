@@ -33,6 +33,9 @@
 
   const emits = defineEmits(['change']);
   const { createMessage } = useMessage();
+
+  const fileList = ref<NonNullable<UploadProps['fileList']>>([]);
+
   async function upload(e) {
     const formData = new FormData();
     formData.append('file', e.file);
@@ -40,9 +43,8 @@
     try {
       const res = await saveTalkImagesUsingPost({ requestBody: formData as any });
       e.onSuccess(res, e);
-      console.log(fileList.value);
-
       const arr = fileList.value.map((item) => item.url ?? item.response);
+
       emits('change', JSON.stringify(arr));
     } catch (err) {
       e.onError(err);
@@ -60,8 +62,6 @@
   const previewVisible = ref(false);
   const previewImage = ref('');
   const previewTitle = ref('');
-
-  const fileList = ref<NonNullable<UploadProps['fileList']>>([]);
 
   const handleCancel = () => {
     previewVisible.value = false;
@@ -98,8 +98,12 @@
     return isPic && isLt2M;
   };
   const remove = (e) => {
-    console.log(e);
-    const arr = fileList.value.filter((item) => item.url !== e.url);
+    const arr: string[] = [];
+    for (let val of fileList.value) {
+      if (val.uid !== e.uid) {
+        arr.push(val.url ?? '');
+      }
+    }
     emits('change', JSON.stringify(arr));
   };
   watch(
@@ -108,8 +112,6 @@
       if (props?.value) {
         fileList.value = [];
         const arr = JSON.parse(props.value);
-        console.log(arr);
-
         for (let url of arr) {
           fileList.value.push({
             name: url.substring(url.lastIndexOf('/') + 1),
