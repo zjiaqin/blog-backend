@@ -1,6 +1,8 @@
 <template>
   <CollapseContainer :title="model" :showHeader="true" :canExpan="false">
-    <BasicForm @register="register" @submit="handleSubmit" />
+    <BasicForm @register="register" @submit="handleSubmit">
+      <template #customSlot> <span class="placeholder">1</span> </template>
+    </BasicForm>
   </CollapseContainer>
 </template>
 
@@ -53,4 +55,20 @@
   });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+  :deep(.ant-form .ant-form-item .ant-form-item-label) {
+    flex: none !important;
+    margin-right: 8px;
+  }
+
+  :deep(.ant-form .ant-form-item .ant-form-item-control) {
+    flex: none !important;
+  }
+
+  .placeholder {
+    max-width: 1px;
+    margin-right: auto;
+    flex: 1 !important;
+    visibility: hidden;
+  }
+</style>

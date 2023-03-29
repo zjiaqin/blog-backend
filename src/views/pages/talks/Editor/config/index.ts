@@ -16,7 +16,7 @@ export function getFormConfig(): Partial<FormProps> {
     },
 
     actionColOptions: {
-      span: 2,
+      flex: '100px',
     },
     schemas: [
       {
@@ -35,9 +35,6 @@ export function getFormConfig(): Partial<FormProps> {
         field: `images`,
         label: '',
         component: 'Input',
-        colProps: {
-          span: 18,
-        },
         render: ({ model, field }) => {
           return h(UploadPic, {
             value: model[field],
@@ -48,11 +45,21 @@ export function getFormConfig(): Partial<FormProps> {
         },
       },
       {
+        field: ``,
+        label: '',
+        component: 'Input',
+        slot: 'customSlot',
+        colProps: {
+          flex: '1 1 auto',
+        },
+      },
+      {
         field: `isTop`,
         label: '置顶',
         colProps: {
-          span: 2,
+          flex: '100px',
         },
+
         component: 'Switch',
         defaultValue: 0,
         componentProps: {
@@ -65,7 +72,7 @@ export function getFormConfig(): Partial<FormProps> {
         label: '',
         component: 'Select',
         colProps: {
-          span: 2,
+          flex: '50px',
         },
         defaultValue: statusOption[0]['value'],
         componentProps: {
