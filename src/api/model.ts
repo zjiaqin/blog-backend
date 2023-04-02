@@ -2,11 +2,11 @@ import {
   getBlogBackInfoUsingGet,
   getUserInfoByIdUsingGet,
   listUserMenusUsingGet,
-  listRolesUsingGet,
+  listUserRolesUsingGet,
 } from './apis';
 import type { ApiData } from '/#/axios';
 
 export type UserInfo = ApiData<typeof getUserInfoByIdUsingGet>;
 export type UserMenu = ApiData<typeof listUserMenusUsingGet>;
-export type RolesList = ApiData<typeof listRolesUsingGet>;
+export type RolesList = ApiData<typeof listUserRolesUsingGet>;
 export type StatisticList = ApiData<typeof getBlogBackInfoUsingGet>;

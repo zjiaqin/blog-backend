@@ -153,6 +153,39 @@ const home: AppRouteModule[] = [
       },
     ],
   },
+
+  {
+    path: '/users',
+    name: 'Users',
+    component: LAYOUT,
+    redirect: '/users/index',
+
+    meta: {
+      orderNo: 5,
+      icon: 'ion:person-sharp',
+      title: '用户管理',
+    },
+    children: [
+      {
+        path: 'list',
+        name: 'UsersList',
+        component: () => import('/@/views/pages/users/List/index.vue'),
+        meta: {
+          icon: 'ion:person-sharp',
+          title: '用户列表',
+        },
+      },
+      {
+        path: 'online',
+        name: 'UsersOnline',
+        component: () => import('/@/views/pages/users/Online/index.vue'),
+        meta: {
+          icon: 'ion:ellipsis-horizontal-circle-outline',
+          title: '在线用户',
+        },
+      },
+    ],
+  },
 ];
 
 export default home;

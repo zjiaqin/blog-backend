@@ -10,7 +10,7 @@ import {
   authLogin,
   logoutUsingPost,
   getUserInfoByIdUsingGet,
-  listRolesUsingGet,
+  listUserRolesUsingGet,
 } from '/@/api/apis';
 import { UserInfo, RolesList } from '/@/api/model';
 import { useI18n } from '/@/hooks/web/useI18n';
@@ -167,7 +167,7 @@ export const useUserStore = defineStore({
     },
     async getRoleListAction() {
       if (!this.hasToken || !this.userInfoId) return null;
-      const roleList = await listRolesUsingGet({});
+      const roleList = await listUserRolesUsingGet(undefined);
 
       this.setRoleList(roleList);
       return roleList;
