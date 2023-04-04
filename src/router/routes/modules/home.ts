@@ -186,6 +186,48 @@ const home: AppRouteModule[] = [
       },
     ],
   },
+
+  {
+    path: '/permission',
+    name: 'Permission',
+    component: LAYOUT,
+    redirect: '/permission/index',
+
+    meta: {
+      orderNo: 5,
+      icon: 'ion:key-sharp',
+      title: '权限管理',
+    },
+    children: [
+      {
+        path: 'menus',
+        name: 'Menus',
+        component: () => import('/@/views/pages/permission/Menus/index.vue'),
+        meta: {
+          icon: 'ion:menu-sharp',
+          title: '菜单管理',
+        },
+      },
+      {
+        path: 'roles',
+        name: 'Roles',
+        component: () => import('/@/views/pages/permission/Roles/index.vue'),
+        meta: {
+          icon: 'ion:ios-contact-outline',
+          title: '角色管理',
+        },
+      },
+      {
+        path: 'resources',
+        name: 'Resources',
+        component: () => import('/@/views/pages/permission/Resources/index.vue'),
+        meta: {
+          icon: 'ion:ios-globe',
+          title: '接口管理',
+        },
+      },
+    ],
+  },
 ];
 
 export default home;
