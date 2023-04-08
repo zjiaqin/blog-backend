@@ -85,6 +85,114 @@ export function getFormConfig(): Partial<FormProps> {
   };
 }
 
+// 弹窗配置
+export function getModalFormConfig(): Partial<FormProps> {
+  return {
+    labelWidth: 100,
+    showActionButtonGroup: false,
+    // submitButtonOptions: {
+    //   text: '保存',
+    // },
+    baseColProps: {
+      span: 22,
+    },
+    actionColOptions: {
+      span: 22,
+    },
+    schemas: [
+      {
+        field: 'MenuType',
+        label: '菜单类型',
+        component: 'Input',
+        show: false,
+      },
+      {
+        field: `name`,
+        label: '菜单名称',
+        component: 'Input',
+        componentProps: {
+          placeholder: '请输入菜单名称',
+        },
+        rules: [{ required: true }],
+      },
+      {
+        field: `icon`,
+        label: '菜单图标',
+        component: 'IconPicker',
+        componentProps: {
+          placeholder: '请输入菜单名称',
+        },
+        rules: [{ required: true }],
+      },
+      {
+        field: `component`,
+        label: '组件路径',
+        component: 'Input',
+        defaultValue: 'LAYOUT',
+        componentProps: {
+          placeholder: '请输入组件路径',
+        },
+        rules: [{ required: true }],
+        dynamicDisabled: (obj) => {
+          const { model } = obj;
+          return [ModelTypeEnum.ADDPARENT, ModelTypeEnum.EDITPARENT].includes(model['MenuType']);
+        },
+      },
+      {
+        field: `path`,
+        label: '访问路径',
+        component: 'Input',
+        componentProps: {
+          placeholder: '请输入菜单名称',
+        },
+        rules: [{ required: true }],
+      },
+      {
+        field: `orderNum`,
+        label: '显示排序',
+        component: 'InputNumber',
+        componentProps: {
+          placeholder: '请输入显示顺序',
+        },
+        rules: [{ required: true }],
+      },
+
+      {
+        field: `isHidden`,
+        label: '显示状态',
+        component: 'RadioGroup',
+        defaultValue: 0,
+        componentProps: {
+          options: [
+            {
+              label: '显示',
+              value: 0,
+            },
+            {
+              label: '隐藏',
+              value: 1,
+            },
+          ],
+        },
+      },
+      {
+        field: `id`,
+        label: 'id',
+        component: 'Input',
+        dynamicDisabled: true,
+        show: false,
+      },
+      {
+        field: `parentId`,
+        label: 'parentId',
+        component: 'Input',
+        dynamicDisabled: true,
+        show: false,
+      },
+    ],
+  };
+}
+
 export type Option = {
   label: string;
   value: number;
@@ -107,4 +215,11 @@ export enum ModalStatuEnum {
   ADDITEM = '新增',
   DELETE = '删除',
   EDIT = '修改',
+}
+
+export enum ModelTypeEnum {
+  ADDPARENT = '新增主菜单',
+  ADDCHILD = '新增子菜单',
+  EDITPARENT = '编辑主菜单',
+  EDITCHILD = '编辑子菜单',
 }

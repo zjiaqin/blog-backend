@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
   import { CheckOutlined, CloseOutlined } from '@ant-design/icons-vue';
-  import { Tag, Image, Switch, Avatar } from 'ant-design-vue';
+  import { Tag, Switch, Avatar } from 'ant-design-vue';
   import { BasicTable, useTable } from '/@/components/Table';
   import { Popup } from './index';
 
@@ -72,7 +72,7 @@
   import type { listResp as _listResp } from '../types';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useModal } from '/@/components/Modal';
-  import { ref, reactive } from 'vue';
+  import { reactive } from 'vue';
 
   const { createMessage } = useMessage();
 
@@ -95,8 +95,6 @@
     loading: false, //删除
     isDisable: false,
   });
-
-  const selectedID = ref<number[]>([]);
 
   const toEdit = (record: _listResp[0]) => {
     openModal(true, record);

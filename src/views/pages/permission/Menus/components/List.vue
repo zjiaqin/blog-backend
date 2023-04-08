@@ -7,23 +7,25 @@
             type="primary"
             :loading="btnLoading.btnId === -1 && btnLoading.loading"
             class="mr-2"
-            @click="toAdd()"
+            @click="toEdit(ModelTypeEnum.ADDPARENT)"
             >{{ ModalStatuEnum.ADDMENU }}</AButton
           >
         </div>
       </template>
-      <template #bodyCell="{ column, record }: { column: any, record: _listResp[0] }">
+      <template
+        #bodyCell="{ column, record }: { column: any, record: _listResp[0] & { parentId: number } }"
+      >
         <template v-if="column.key === 'icon'">
           <Icon :icon="record[column.key]" />
         </template>
 
         <template v-if="column.key === 'isHidden'">
           <Switch
-            :loading="btnLoading.isTop && btnLoading.btnId === record['id']"
+            :loading="btnLoading.isHidden && btnLoading.btnId === record['id']"
             :checkedValue="1"
             :unCheckedValue="0"
             v-model:checked="record[column.key]"
-            @change="topAndFeaturedChange(record, column.key)"
+            @change="isHiddenChange(record, column.key)"
           >
             <template #checkedChildren><check-outlined /></template>
             <template #unCheckedChildren><close-outlined /></template>
@@ -32,13 +34,14 @@
 
         <template v-if="column.key === 'operate'">
           <AButton
+            v-if="!record.parentId"
             size="small"
             :iconSize="16"
             :style="{ 'font-size': '12px' }"
             preIcon="ion:add"
             type="link"
-            @click="toAdd()"
-            :loading="btnLoading.btnId === record.userInfoId && btnLoading.loading"
+            @click="toEdit(ModelTypeEnum.ADDCHILD, { parentId: record.id })"
+            :loading="btnLoading.btnId === record.id && btnLoading.loading"
             >{{ ModalStatuEnum.ADDITEM }}</AButton
           >
           <AButton
@@ -47,8 +50,10 @@
             :style="{ 'font-size': '12px' }"
             preIcon="ion:md-create"
             type="link"
-            @click="toEdit()"
-            :loading="btnLoading.btnId === record.userInfoId && btnLoading.loading"
+            @click="
+              toEdit(record.parentId ? ModelTypeEnum.EDITCHILD : ModelTypeEnum.EDITPARENT, record)
+            "
+            :loading="btnLoading.btnId === record.id && btnLoading.loading"
             >{{ ModalStatuEnum.EDIT }}</AButton
           >
           <AButton
@@ -57,8 +62,8 @@
             :style="{ 'font-size': '12px' }"
             preIcon="ion:trash-b"
             type="link"
-            @click="toDelete()"
-            :loading="btnLoading.btnId === record.userInfoId && btnLoading.loading"
+            @click="toDelete(record.id)"
+            :loading="btnLoading.btnId === record.id && btnLoading.loading"
             >{{ ModalStatuEnum.DELETE }}</AButton
           >
         </template>
@@ -67,28 +72,33 @@
         </template>
       </template>
     </BasicTable>
+    <AddModel @register="registerModal" @ok="upDateTable" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import { AddModel } from './index';
   import { Icon } from '/@/components/Icon';
   import { Switch } from 'ant-design-vue';
   import { CheckOutlined, CloseOutlined } from '@ant-design/icons-vue';
   import { BasicTable, useTable } from '/@/components/Table';
-
-  import { listMenusUsingGet, deleteCommentsUsingDelete } from '/@/api/apis';
+  import { useModal } from '/@/components/Modal';
+  import {
+    listMenusUsingGet,
+    deleteMenuUsingDelete,
+    updateMenuIsHiddenUsingPut,
+  } from '/@/api/apis';
   import { Time } from '/@/components/Time';
-  import { getBasicColumns, getFormConfig, ModalStatuEnum } from '../config';
-  import type { listResp as _listResp } from '../types';
+  import { getBasicColumns, getFormConfig, ModalStatuEnum, ModelTypeEnum } from '../config';
+  import type { listResp as _listResp, UpdateMenuParams } from '../types';
 
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { ref, reactive } from 'vue';
+  import { reactive } from 'vue';
 
   const { createMessage } = useMessage();
 
   const [registerTable, { reload }] = useTable({
     api: listMenusUsingGet,
-
     columns: getBasicColumns(),
     useSearchForm: true,
     formConfig: getFormConfig(),
@@ -97,33 +107,60 @@
       res.forEach((item) => {
         if (item?.children?.length === 0) {
           item.children = null;
+        } else {
+          item.children.forEach((sub) => {
+            sub.parentId = item.id;
+          });
         }
       });
     },
-    pagination: {
-      position: ['bottomCenter'],
-    },
+    pagination: false,
   });
+
+  const [registerModal, { openModal, setModalProps }] = useModal();
 
   // 删除按钮加载控制
   const btnLoading = reactive({
     btnId: -99, //获取具体的按钮ID，避免整列的按钮状态都改变，-1 为批量删除 -2为批量审批
     loading: false, //删除
+    isHidden: false,
   });
-
-  const selectedID = ref<number[]>([]);
 
   async function toDelete(id: _listResp[number]['id'] = -1) {
     btnLoading.btnId = id;
     btnLoading.loading = true;
-    const ids: number[] = id === -1 ? selectedID.value : [id];
     try {
-      await deleteCommentsUsingDelete({ requestBody: ids });
+      await deleteMenuUsingDelete({ menuId: id });
       createMessage.success('操作成功');
     } catch {}
     btnLoading.loading = false;
     reload();
   }
+
+  function toEdit(title: ModelTypeEnum, record: UpdateMenuParams['requestBody'] = {}) {
+    setModalProps({ title });
+
+    openModal(true, { MenuType: title, ...record });
+  }
+  async function isHiddenChange(record: _listResp[0], method = 'isHidden') {
+    btnLoading.btnId = record.id ?? -1;
+    btnLoading[method] = true;
+    try {
+      await updateMenuIsHiddenUsingPut({
+        requestBody: { id: record.id, isHidden: record.isHidden },
+      });
+      createMessage.success(`显示状态修改成功`);
+    } catch (error) {
+      record[method] = record[method] ? 0 : 1;
+    }
+    btnLoading[method] = false;
+  }
+
+  const upDateTable = () => {
+    setTimeout(() => {
+      reload();
+    });
+  };
 </script>
 
 <style lang="less" scoped>
