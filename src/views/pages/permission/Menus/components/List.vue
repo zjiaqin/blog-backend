@@ -72,7 +72,7 @@
         </template>
       </template>
     </BasicTable>
-    <AddModel @register="registerModal" @ok="upDateTable" />
+    <AddModel @register="registerModal" @ok="updataTable" />
   </div>
 </template>
 
@@ -156,10 +156,10 @@
     btnLoading[method] = false;
   }
 
-  const upDateTable = () => {
+  const updataTable = () => {
     setTimeout(() => {
       reload();
-    });
+    }, 500);
   };
 </script>
 

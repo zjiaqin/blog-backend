@@ -224,6 +224,7 @@ const home: AppRouteModule[] = [
         meta: {
           icon: 'ion:ios-globe',
           title: '接口管理',
+          hideMenu: true,
         },
       },
     ],
