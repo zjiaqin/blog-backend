@@ -229,6 +229,56 @@ const home: AppRouteModule[] = [
       },
     ],
   },
+  {
+    path: '/system',
+    name: 'System',
+    component: LAYOUT,
+    redirect: '/system/website',
+
+    meta: {
+      orderNo: 5,
+      icon: 'ion:settings-sharp',
+      title: '系统管理',
+    },
+    children: [
+      {
+        path: 'website',
+        name: 'Website',
+        component: () => import('/@/views/pages/system/Website/index.vue'),
+        meta: {
+          icon: 'ion:ios-globe',
+          title: '网站管理',
+        },
+      },
+      {
+        path: 'quartz',
+        name: 'Quartz',
+        component: () => import('/@/views/pages/system/Quartz/index.vue'),
+        meta: {
+          icon: 'ion:ios-alarm',
+          title: '定时任务',
+        },
+      },
+      {
+        path: 'links',
+        name: 'Links',
+        component: () => import('/@/views/pages/system/Links/index.vue'),
+        meta: {
+          icon: 'ion:ios-link',
+          title: '友链管理',
+        },
+      },
+      {
+        path: 'about',
+        name: 'About',
+        component: () => import('/@/views/pages/system/About/index.vue'),
+        meta: {
+          icon: 'ion:md-bookmarks',
+          title: '关于我',
+        },
+      },
+    ],
+  },
 ];
 
 export default home;
