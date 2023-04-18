@@ -1122,18 +1122,22 @@ export const listJobLogsUsingGet = createRequest<
  */
 export const listJobsUsingGet = createRequest<
   {
-    任务名称: string;
-    任务状态: number;
-    任务组别: string;
+    jobName?: string;
+    status?: number;
+    jobGroup?: string;
+    size?: number;
+    current?: number;
   },
   ResultVoPageResultDtoJobDto
->('listJobsUsingGet', ({ 任务名称, 任务状态, 任务组别 }) => ({
+>('listJobsUsingGet', ({ jobName, status, jobGroup, size, current }) => ({
   url: `/admin/jobs`,
   method: 'GET',
   params: {
-    任务名称,
-    任务状态,
-    任务组别,
+    jobName,
+    status,
+    jobGroup,
+    size,
+    current,
   },
 }));
 
