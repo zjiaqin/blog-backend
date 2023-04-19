@@ -12,7 +12,6 @@
             >{{ ModalStatuEnum.ADD }}</AButton
           >
           <AButton
-            :disabled="!selectedID.length"
             type="primary"
             :loading="btnLoading.btnId === -2 && btnLoading.loading"
             class="mr-2"
