@@ -279,6 +279,48 @@ const home: AppRouteModule[] = [
       },
     ],
   },
+
+  {
+    path: '/logs',
+    name: 'Log',
+    component: LAYOUT,
+    redirect: '/logs/exception',
+
+    meta: {
+      orderNo: 5,
+      icon: 'ion:ios-bookmarks',
+      title: '日志管理',
+    },
+    children: [
+      {
+        path: 'exception',
+        name: 'ExceptionLog',
+        component: () => import('/@/views/pages/logs/Exception/index.vue'),
+        meta: {
+          icon: 'ion:md-bug',
+          title: '异常日志',
+        },
+      },
+      {
+        path: 'operation',
+        name: 'OperationLog',
+        component: () => import('/@/views/pages/logs/Operation/index.vue'),
+        meta: {
+          icon: 'ion:server-outline',
+          title: '操作日志',
+        },
+      },
+      {
+        path: 'quartz',
+        name: 'QuartzLog',
+        component: () => import('/@/views/pages/logs/quartz/index.vue'),
+        meta: {
+          icon: 'ion:md-bookmarks',
+          title: '定时任务日志',
+        },
+      },
+    ],
+  },
 ];
 
 export default home;
