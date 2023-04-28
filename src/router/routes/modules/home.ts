@@ -313,7 +313,7 @@ const home: AppRouteModule[] = [
       {
         path: 'quartz',
         name: 'QuartzLog',
-        component: () => import('/@/views/pages/logs/quartz/index.vue'),
+        component: () => import('/@/views/pages/logs/Quartz/index.vue'),
         meta: {
           icon: 'ion:md-bookmarks',
           title: '定时任务日志',

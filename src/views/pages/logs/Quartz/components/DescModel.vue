@@ -5,7 +5,6 @@
     :draggable="false"
     :canFullscreen="false"
     :minHeight="100"
-    width="auto"
     :showCancelBtn="false"
     :showOkBtn="false"
     @cancel="close"

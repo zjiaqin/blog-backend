@@ -93,7 +93,12 @@
                   icon="ant-design:eye-filled"
                   @click="toDesc(record.id)"
                 />
-                <MenuItem key="logout" text="调度日志" icon="ion:options-sharp" @click="toLog()" />
+                <MenuItem
+                  key="logout"
+                  text="调度日志"
+                  icon="ion:options-sharp"
+                  @click="toLog(record.id)"
+                />
               </Menu>
             </template>
           </Dropdown>
@@ -126,6 +131,7 @@
   import { useMessage } from '/@/hooks/web/useMessage';
   import { ref, reactive } from 'vue';
   import { useModal } from '/@/components/Modal';
+  import { useRouter } from 'vue-router';
 
   const [registerModal, { openModal, setModalProps }] = useModal();
   const [registerDescModal, { openModal: openDescModal }] = useModal();
@@ -192,7 +198,11 @@
     openModal(true, { type: title, ...record });
   }
 
-  const toLog = () => {};
+  const router = useRouter();
+
+  const toLog = (jobId = 0) => {
+    router.push({ path: '/logs/quartz', query: { jobId } });
+  };
 
   const toRunOnce = async (record: NonNullable<_listResp[number]>) => {
     const { id, jobGroup } = record;

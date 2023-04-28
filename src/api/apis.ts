@@ -1096,26 +1096,33 @@ export const listJobLogGroupsUsingGet = createRequest<undefined, ResultVoObject>
  */
 export const listJobLogsUsingGet = createRequest<
   {
-    任务Id?: number;
-    任务名称?: string;
-    任务状态?: number;
-    任务的组别?: string;
-    开始时间?: string;
-    结束时间?: string;
+    jobId?: number;
+    jobName?: string;
+    status?: number;
+    jobGroup?: string;
+    startTime?: string;
+    endTime?: string;
+    current?: number;
+    size?: number;
   },
   ResultVoPageResultDtoJobLogDto
->('listJobLogsUsingGet', ({ 任务Id, 任务名称, 任务状态, 任务的组别, 开始时间, 结束时间 }) => ({
-  url: `/admin/jobLogs`,
-  method: 'GET',
-  params: {
-    任务Id,
-    任务名称,
-    任务状态,
-    任务的组别,
-    开始时间,
-    结束时间,
-  },
-}));
+>(
+  'listJobLogsUsingGet',
+  ({ jobId, jobName, status, jobGroup, startTime, endTime, current, size }) => ({
+    url: `/admin/jobLogs`,
+    method: 'GET',
+    params: {
+      jobId,
+      jobName,
+      status,
+      jobGroup,
+      startTime,
+      endTime,
+      current,
+      size,
+    },
+  }),
+);
 
 /**
  * 获取任务列表
