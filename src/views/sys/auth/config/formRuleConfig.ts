@@ -55,7 +55,7 @@ export const captchaRule = [
   {
     validator(_rule: Rule, value: string) {
       if (!value) return Promise.reject(t('custom.xYRNxo6GRKFnTm11yIQ6y'));
-      if (value.length === 5) {
+      if (value.length === 6) {
         return Promise.resolve();
       } else {
         return Promise.reject(t('custom.wonPyjiL9zEile47Mtmy1'));

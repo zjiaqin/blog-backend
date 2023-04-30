@@ -55,8 +55,8 @@ export const useUserStore = defineStore({
     getUserInfo(): UserInfo {
       return this.userInfo || getAuthCache<UserInfo>(USER_INFO_KEY) || {};
     },
-    getUserInfoId(): number | {} {
-      return this.userInfoId || getAuthCache<number>(USER_INFOID_KEY) || {};
+    getUserInfoId(): number {
+      return this.userInfoId || getAuthCache<number>(USER_INFOID_KEY) || 0;
     },
     getToken(): string {
       return this.token || getAuthCache<string>(TOKEN_KEY);
@@ -157,9 +157,9 @@ export const useUserStore = defineStore({
       return userInfo;
     },
     async getUserInfoAction(): Promise<UserInfo | null> {
-      if (!this.hasToken || !this.userInfoId) return null;
+      if (!this.hasToken || !this.getUserInfoId) return null;
 
-      const userInfo = await getUserInfoByIdUsingGet({ userInfoId: this.userInfoId });
+      const userInfo = await getUserInfoByIdUsingGet({ userInfoId: this.getUserInfoId });
 
       this.setUserInfo(userInfo);
 

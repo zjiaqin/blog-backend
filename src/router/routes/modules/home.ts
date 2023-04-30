@@ -321,6 +321,29 @@ const home: AppRouteModule[] = [
       },
     ],
   },
+  {
+    path: '/account',
+    name: 'Account',
+    component: LAYOUT,
+    redirect: '/account/setting',
+
+    meta: {
+      orderNo: 5,
+      icon: 'ion:person',
+      title: '个人中心',
+    },
+    children: [
+      {
+        path: 'setting',
+        name: 'AccountSetting',
+        component: () => import('/@/views/pages/account/Setting/index.vue'),
+        meta: {
+          icon: 'ion:person',
+          title: '个人设置',
+        },
+      },
+    ],
+  },
 ];
 
 export default home;

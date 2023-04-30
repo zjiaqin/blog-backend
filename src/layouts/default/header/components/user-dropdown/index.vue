@@ -78,7 +78,7 @@
       function handleMenuClick(e: MenuInfo) {
         switch (e.key as MenuEvent) {
           case 'user-info':
-            router.push({ path: '/pages/user-info' });
+            router.push({ path: '/account/setting' });
             break;
           case 'logout':
             userStore.confirmLoginOut();

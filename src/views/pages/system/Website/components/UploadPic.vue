@@ -33,6 +33,8 @@
   const emits = defineEmits(['change']);
   const { createMessage } = useMessage();
   async function upload(e) {
+    console.log(e);
+
     const formData = new FormData();
     formData.append('file', e.file);
     try {

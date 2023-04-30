@@ -193,3 +193,7 @@ export const eChartOptionAdd = (option) => {
   });
 };
 // 获取单柱图的y轴最大值
+
+export function blobToFile(value) {
+  return new File([value.file], value.filename, { type: value.file.type });
+}
